@@ -10,22 +10,24 @@
 		catppuccin.url = "github:catppuccin/nix";
 	};
 
-	outputs = { self, nixpkgs }: {
+	outputs = inputs@{ nixpkgs, home-manager, ... }: let
+		lib = nixpkgs.lib;
+	in {
 
 		nixosConfigurations = {
-			nixos = nixpkgs.lib.nixosSystem {
+			nixos = lib.nixosSystem {
 
 			};
-			nixlab = nixpkgs.lib.nixosSystem {
+			nixlab = lib.nixosSystem {
 
 			};
 		};
 
 		homeConfigurations = {
-			nixos = inputs.home-manager.lib.homeManagerConfiguration {
+			nixos = home-manager.lib.homeManagerConfiguration {
 
 			};
-			nixlab = inputs.home-manager.lib.homeManagerConfiguration {
+			nixlab = home-manager.lib.homeManagerConfiguration {
 
 			};
 		};
