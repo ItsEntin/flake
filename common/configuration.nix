@@ -1,7 +1,6 @@
 { config, lib, pkgs, ... }: {
 
 	imports = [
-		/etc/nixos/hardware-configuration.nix
 	];
 
 	time.timeZone = "America/Toronto";
