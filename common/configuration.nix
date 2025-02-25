@@ -48,7 +48,15 @@
 
 	programs = {
 		neovim.enable = true;
-		git.enable = true;
+		git = {
+			enable = true;
+			config = {
+				user = {
+					name = "evren";
+					email = "evren@evren.gay";
+				};
+			};
+		};
 	};
 
 	services = {
