@@ -28,7 +28,6 @@
 				modules = [
 					catppuccin.nixosModules.catppuccin
 					common/configuration.nix
-					hosts/nixlab/configuration.nix
 				];
 			};
 		};
