@@ -31,6 +31,7 @@
 					catppuccin.nixosModules.catppuccin
 					common/configuration.nix
 					hosts/nixlab/configuration.nix
+					docker/default.nix
 
 					# home-manager.nixosModules.home-manager
 					# {
