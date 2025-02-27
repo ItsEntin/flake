@@ -4,7 +4,7 @@
 	home.username = lib.mkDefault "evren";
 	home.homeDirectory = lib.mkDefault "/home/evren";
 
-	imports = lib.lists.map (x: lib.path.append ./home-manager x ) [
+	imports = lib.lists.map (x: ./home-manager + x ) [
 		/zsh.nix
 		/nvim.nix
 		/lf.nix
