@@ -70,5 +70,9 @@ programs.lf = {
 	};
 };
 
-xdg.configFile."lf/icons".source = builtins.fetchurl "https://raw.githubusercontent.com/gokcehan/lf/master/etc/icons.example";
+xdg.configFile."lf/icons".source = builtins.fetchurl { 
+	url = "https://raw.githubusercontent.com/gokcehan/lf/master/etc/icons.example";
+	sha256 = "734a2b0d03b885e761fb168dae8bc2d207a1e62ab62be7be3d920be5a6f19c89";
+};
+
 }
