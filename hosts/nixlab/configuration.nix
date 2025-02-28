@@ -8,13 +8,19 @@
 
 	boot.loader.grub.device = "nodev";
 
-	fileSystems."/" = {
-		device = "/dev/disk/by-label/NIXROOT";
-		fsType = "ext4";
-	};
-	fileSystems."/boot" = {
-		device = "/dev/disk/by-label/NIXBOOT";
-		fsType = "vfat";
+	fileSystem = {
+		"/" = {
+			device = "/dev/disk/by-label/NIXROOT";
+			fsType = "ext4";
+		};
+		"/boot" = {
+			device = "/dev/disk/by-label/NIXBOOT";
+			fsType = "vfat";
+		};
+		"/mnt/hdd" = {
+			device = "/dev/disk/by-label/HDD";
+			fsType = "ext4";
+		};
 	};
 
 	networking.interfaces.enp0s31f6.ipv4.addresses = [{

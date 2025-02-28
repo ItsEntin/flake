@@ -9,4 +9,8 @@
 		};
 	};
 
+	imports = [
+		./jellyfin.nix
+	];
+
 }
