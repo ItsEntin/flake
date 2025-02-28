@@ -1,6 +1,6 @@
 { config, lib, pkgs, ... }: {
 
-	virtualization = {
+	virtualisation = {
 		docker = {
 			enable = true;
 		};

@@ -1,6 +1,6 @@
 { config, lib, pkgs, ... }: {
 
-	virtualization.oci-containers.containers = {
+	virtualisation.oci-containers.containers = {
 		jellyfin = {
 			container_name = "jellyfin";
 			image = "jellyfin/jellyfin";

@@ -8,7 +8,7 @@
 
 	boot.loader.grub.device = "nodev";
 
-	fileSystem = {
+	fileSystems = {
 		"/" = {
 			device = "/dev/disk/by-label/NIXROOT";
 			fsType = "ext4";
