@@ -10,7 +10,8 @@
 	};
 
 	imports = [
-		./jellyfin.nix
+		./media.nix
+		./homepage.nix
 	];
 
 }

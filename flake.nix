@@ -31,7 +31,7 @@
 					catppuccin.nixosModules.catppuccin
 					common/configuration.nix
 					hosts/nixlab/configuration.nix
-					containers/default.nix
+					services/default.nix
 
 					# home-manager.nixosModules.home-manager
 					# {

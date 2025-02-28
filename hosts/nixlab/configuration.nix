@@ -28,6 +28,10 @@
 		prefixLength = 24;
 	}];
 
+	environment.shellAliases = {
+		nrs = lib.mkForce "sudo nixos-rebuild switch --flake ~/flake#nixlab";
+	};
+
 	programs = {
 		git.enable = true;
 	};
