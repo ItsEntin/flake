@@ -8,6 +8,7 @@
 			inputs.nixpkgs.follows = "nixpkgs";
 		};
 		catppuccin.url = "github:catppuccin/nix";
+		agenix.url = "github:ryantm/agenix";
 	};
 
 	outputs = inputs@{ self, nixpkgs, home-manager, catppuccin, ... }: let
@@ -29,16 +30,11 @@
 				specialArgs = { inherit inputs; };
 				modules = [
 					catppuccin.nixosModules.catppuccin
+					inputs.agenix.nixosModules.default
+
 					common/configuration.nix
 					hosts/nixlab/configuration.nix
-					docker/default.nix
-
-					# home-manager.nixosModules.home-manager
-					# {
-					# 	home-manager.useGlobalPkgs = true;
-					# 	home-manager.useUserPackages = true;
-					# 	home-manager.users.evren = import ./hosts/nixlab/home.nix;
-					# }
+					services/default.nix
 				];
 			};
 		};

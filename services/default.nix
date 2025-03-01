@@ -1,6 +1,6 @@
 { config, lib, pkgs, ... }: {
 
-	virtualization = {
+	virtualisation = {
 		docker = {
 			enable = true;
 		};
@@ -8,5 +8,12 @@
 			backend = "docker";
 		};
 	};
+
+	imports = [
+		./media.nix
+		./homepage.nix
+		./torrent.nix
+		./immich.nix
+	];
 
 }
