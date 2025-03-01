@@ -12,6 +12,8 @@
 	imports = [
 		./media.nix
 		./homepage.nix
+		./torrent.nix
+		./immich.nix
 	];
 
 }
