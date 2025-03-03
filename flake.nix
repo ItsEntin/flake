@@ -35,6 +35,7 @@
 					common/configuration.nix
 					hosts/nixlab/configuration.nix
 					services/default.nix
+					secrets/default.nix
 				];
 			};
 		};
