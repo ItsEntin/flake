@@ -1,10 +1,27 @@
 { config, lib, pkgs, ... }: {
 
-	services = {
-		jellyfin.enable = true;
+
+	services = let
+		common = {
+			enable = true;
+			# user = "torrent";
+			group = "torrent";
+		};
+	in {
+
+		jellyfin = common;
+		radarr = common;
+		sonarr = common;
 		jellyseerr.enable = true;
-		radarr.enable = true;
-		sonarr.enable = true;
+		prowlarr.enable = true;
+		flaresolverr.enable = true;
 	};
+
+	users.groups.torrent = {};
+
+	# users.users.torrent = {
+	# 	group = "torrent";
+	# 	isNormalUser = true;
+	# };
 
 }

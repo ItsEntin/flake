@@ -4,6 +4,7 @@
 
 	imports = [
 		./hardware-configuration.nix
+		./paths.nix
 	];
 
 	networking.hostName = "nixlab";
@@ -34,7 +35,7 @@
 
 	environment = {
 		shellAliases = {
-			nrs = lib.mkForce "sudo nixos-rebuild switch --flake ~/flake#nixlab";
+			nrs = lib.mkForce "sudo nixos-rebuild switch --flake ~/flake#nixlab --impure";
 		};
 		variables = {
 		};

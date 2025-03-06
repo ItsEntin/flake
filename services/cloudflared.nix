@@ -1,5 +1,7 @@
 { config, lib, pkgs, ... }: {
 
+	environment.systemPackages = [ pkgs.cloudflared ];
+
 	services.cloudflared = {
 		enable = true;
 		tunnels = {
@@ -7,7 +9,10 @@
 				credentialsFile = config.age.secrets.cf-credentials.path;
 				default = "http_status:404";
 				ingress = {
+					# After adding a rule, run "cloudflared tunnel route dns <tunnel name> <public hostname>"
 					"jellyfin.evren.gay" = "http://localhost:8096";
+					"lab.evren.gay" = "http://localhost:3000";
+					"photos.evren.gay" = "http://localhost:2283";
 				};
 			};
 		};

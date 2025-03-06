@@ -7,4 +7,6 @@ in
 {
 	"cf-credentials.age".publicKeys = [ nixlab ];
 	"torrent-wg-key.age".publicKeys = [ nixlab ];
+	"deluge-creds.age".publicKeys = [ nixlab ];
+	"torrent-wg-conf.age".publicKeys = [ nixlab ];
 }

@@ -14,8 +14,11 @@
 
 		./media.nix
 		./homepage.nix
-		# ./immich.nix
-		./torrent.nix
+		./immich.nix
+		# ./torrent.nix
+		# ./deluge.nix
+		# ./wireguard.nix
+		./torrent-docker.nix
 	];
 
 }
