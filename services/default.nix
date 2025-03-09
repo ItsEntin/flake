@@ -15,10 +15,10 @@
 		./media.nix
 		./homepage.nix
 		./immich.nix
-		# ./torrent.nix
-		# ./deluge.nix
-		# ./wireguard.nix
-		./torrent-docker.nix
+		./torrent.nix
+		./pufferpanel.nix
+		./mealie.nix
+		./gotify.nix
 	];
 
 }

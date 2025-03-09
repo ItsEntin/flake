@@ -13,6 +13,8 @@
 					"jellyfin.evren.gay" = "http://localhost:8096";
 					"lab.evren.gay" = "http://localhost:3000";
 					"photos.evren.gay" = "http://localhost:2283";
+					"jellyseerr.evren.gay" = "http://localhost:5055";
+					"gotify.evren.gay" = "http://localhost:8108";
 				};
 			};
 		};

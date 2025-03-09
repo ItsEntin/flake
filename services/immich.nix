@@ -1,9 +1,9 @@
 { config, lib, pkgs, ... }: {
 
 	services.immich = {
-		# enable = true;
+		enable = true;
 		openFirewall = true;
-		mediaLocation = "/mnt/hdd/media/immich";
+		mediaLocation = "/mnt/hdd/immich";
 		environment = {
 			# UPLOAD_LOCATION = /mnt/hdd/media/photos-videos
 		};

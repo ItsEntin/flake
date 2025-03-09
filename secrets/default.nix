@@ -8,16 +8,11 @@
 			owner = "cloudflared";
 			group = "cloudflared";
 		};
-		torrent-wg-key = {
-			file = ./torrent-wg-key.age;
-		};
-		# deluge-creds = {
-		# 	file = ./deluge-creds.age;
-		# 	owner = "deluge";
-		# 	group = "deluge";
-		# };
 		torrent-wg-conf = {
 			file = ./torrent-wg-conf.age;
+		};
+		radarr-api-key = {
+			file = ./radarr-api-key.age;
 		};
 	};
 
