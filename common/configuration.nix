@@ -50,7 +50,10 @@
 	];
 
 	programs = {
-		neovim.enable = true;
+		neovim = {
+			enable = true;
+			defaultEditor = true;
+		};
 		git = {
 			enable = true;
 			config = {

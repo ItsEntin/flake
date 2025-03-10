@@ -11,8 +11,20 @@
 		torrent-wg-conf = {
 			file = ./torrent-wg-conf.age;
 		};
+		torrent-wg-key = {
+			file = ./torrent-wg-key.age;
+		};
+		torrent-env = {
+			file = ./torrent-env.age;
+		};
+		gluetun-conf = {
+			file = ./gluetun-conf.age;
+		};
 		radarr-api-key = {
 			file = ./radarr-api-key.age;
+		};
+		radarr-api-key-env = {
+			file = ./radarr-api-key-env.age;
 		};
 	};
 

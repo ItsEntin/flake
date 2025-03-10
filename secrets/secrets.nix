@@ -3,9 +3,15 @@ let
 	laptop = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIIZGp7WOC3gv2M0KvIxWjEsIAN13xann0jJtp17irnQg root@nixos";
 
 	systems = [ nixlab laptop ];
+
+	evren_nixlab = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILx52OIAM9RcL5GEnula/WGOl907ZQAxcvYZ2DrXAMiw evren@nixlab";
 in
 {
 	"cf-credentials.age".publicKeys = [ nixlab ];
 	"torrent-wg-conf.age".publicKeys = [ nixlab ];
+	"torrent-wg-key.age".publicKeys = [ nixlab ];
+	"torrent-env.age".publicKeys = [ nixlab evren_nixlab ];
+	"gluetun-conf.age".publicKeys = [ nixlab ];
 	"radarr-api-key.age".publicKeys = [ nixlab ];
+	"radarr-api-key-env.age".publicKeys = [ nixlab ];
 }

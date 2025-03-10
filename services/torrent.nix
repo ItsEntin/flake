@@ -11,13 +11,18 @@ let
 					- NET_ADMIN
 				devices:
 					- /dev/net/tun:/dev/net/tun
-				# secrets:
-				# 	- wg-key
 				volumes:
-					- ${config.age.secrets.torrent-wg-conf.path}:/gluetun/wireguard/wg0.conf
+					# - $#{config.age.secrets.torrent-wg-conf.path}:/gluetun/wireguard/wg0.conf
+					- ${config.age.secrets.gluetun-conf.path}:/gluetun/auth/config.toml
+				env_file: ${config.age.secrets.torrent-env.path}
 				environment:
-					VPN_SERVICE_PROVIDER: custom
+					VPN_SERVICE_PROVIDER: protonvpn
 					VPN_TYPE: wireguard
+					VPN_PORT_FORWARDING: on
+					GLUETUN_HTTP_CONTROL_SERVER_ENABLE: on
+
+					WIREGUARD_ADRESSES: "10.2.0.2/32"
+					VPN_CITIES: Toronto
 				ports:
 					- 6011:6011 # qBittorrent
 					- 6081:6081 # qBittorrent API
@@ -34,7 +39,6 @@ let
 					- PGID=988
 					- TZ=America/Toronto
 					- WEBUI_PORT=6011
-					- TORRENTING_PORT=51820
 					- DOCKER_MODS=ghcr.io/vuetorrent/vuetorrent-lsio-mod:latest
 					- TP_COMMUNITY_THEME=true
 					- TP_THEME=catppuccin-mocha
@@ -46,6 +50,7 @@ let
 					"gluetun":
 						condition: service_healthy
 				restart: unless-stopped
+
 			flaresolverr:
 				image: ghcr.io/flaresolverr/flaresolverr:latest
 				container_name: flaresolverr
@@ -53,6 +58,23 @@ let
 					- TZ=America/Toronto
 				ports:
 					- 8191:8191
+				restart: unless-stopped
+
+			qsticky:
+				image: ghcr.io/monstermuffin/qsticky:latest
+				container_name: qsticky
+				env_file: 
+					- "${config.age.secrets.torrent-env.path}"
+				environment:
+					QBITTORRENT_HOST: gluetun
+					QBITTORRENT_PORT: 6011
+
+					GLUETUN_HOST: gluetun
+					GLUETUN_PORT: 8000
+					GLUETUN_AUTH_TYPE: apikey
+
+					CHECK_INTERVAL: 30
+					LOG_LEVEL: INFO
 				restart: unless-stopped
 	'');
 

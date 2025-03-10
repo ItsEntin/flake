@@ -5,9 +5,10 @@
 		openFirewall = true;
 		settings = {
 			server.port = 3000;
-			server.host = "0.0.0.0";
+			# server.host = "localhost";
 			branding = {
-				logo-url = "https://evren.gay/assets/favicon.ico";
+				# logo-url = "https://evren.gay/assets/favicon.ico";
+				logo-url = "https://nixos.org/favicon.ico";
 				favicon-url = "https://evren.gay/assets/favicon.ico";
 				custom-footer = "made with estrogen :3";
 			};
@@ -44,6 +45,17 @@
 							widgets = [
 								{
 									type = "server-stats";
+									servers = [
+										{
+											name = "nixlab";
+											type = "local";
+											mountpoints = {
+												"/" = {
+													
+												};
+											};
+										}
+									];
 								}
 								{
 									type = "split-column";
@@ -86,11 +98,11 @@
 													url = "http://100.98.134.2:6011";
 													icon = "di:qbittorrent";
 												}
-												# {
-												# 	title = "Gotify";
-												# 	utl = "https://gotify.evren.gay";
-												# 	icon = "di:gotify";
-												# }
+												{
+													title = "Gotify";
+													url = "http://nixlab:8108";
+													icon = "di:gotify";
+												}
 											];
 										}
 										{
@@ -146,6 +158,11 @@
 															url = "https://wiki.servarr.com/sonarr";
 															icon = "di:sonarr";
 														}
+														{
+															title = "Gotify";
+															url = "https://gotify.net/docs/index";
+															icon = "di:gotify";
+														}
 													];
 												}
 												{
@@ -181,50 +198,51 @@
 									type = "markets";
 									markets = [
 										{
-											symbol = "CADUSD=X";
 											name = "CAD to USD";
+											symbol = "CADUSD=X";
+											chart-link = "https://ca.finance.yahoo.com/quote/CADUSD=X/";
 										}
 									];
 								}
-								# {
-								# 	# from https://gist.github.com/uykukacinca/a03598f591441dd8646e2502e99cb7c5
-								# 	type = "custom-api";
-								# 	title = "Recently Added Movies";
-								# 	cache = "5m";
-								# 	url = "http://localhost:7878/api/v3/history?eventType=3&includeMovie=true";
-								# 	headers = {
-								# 		Accept = "application.json";
-								# 		# X-Api-Key = "!import ${config.age.secrets.radarr-api-key.path}";
-								# 	};
-								# 	template = /*html*/ ''
-								# 		<ul class="list list-gap-14 collapsible-container" data-collapse-after="5">
-								# 		  {{ range .JSON.Array "records" }}
-								# 		  <li>
-								# 			  <div class="flex gap-10 row-reverse-on-mobile thumbnail-parent">
-								# 				  <div class="shrink-0" data-popover-type="html">
-								# 					<div data-popover-html="">
-								# 						<img src="{{ .String "movie.images.0.remoteUrl" }}" loading="lazy" alt="">
-								# 					</div>
-								# 					<img class="twitch-category-thumbnail thumbnail" src="{{ .String "movie.images.0.remoteUrl" }}" alt="{{ .String "movie.title" }}" loading="lazy">
-								# 				  </div>
-								# 				  <div class="grow min-width-0">
-								# 					  <a href="http://localhost:7878/movie/{{ .String "movie.titleSlug" }}" class="color-highlight size-title-dynamic block text-truncate" target="_blank" rel="noreferrer">{{ .String "movie.title" }}</a>
-								# 					  <ul class="list-horizontal-text flex-nowrap text-compact">
-								# 						  <li class="shrink-0">{{ .String "movie.year" }}</li>
-								# 						  <li class="shrink-0">{{ .String "movie.ratings.imdb.value" }}</li>
-								# 					  </ul>
-								# 					  <ul class="list-horizontal-text flex-nowrap text-truncate">
-								# 						{{ range .Array "movie.genres" }}
-								# 						  <li>{{ .String "" }}</li>
-								# 						{{ end }}
-								# 					  </ul>
-								# 				  </div>
-								# 			  </div>
-								# 		  </li>
-								# 		  {{ end }}
-								# 		</ul>
-								# 	'';
-								# }
+								{
+									# from https://gist.github.com/uykukacinca/a03598f591441dd8646e2502e99cb7c5
+									type = "custom-api";
+									title = "Recently Added Movies";
+									cache = "5m";
+									url = "http://localhost:7878/api/v3/history?eventType=3&includeMovie=true";
+									headers = {
+										Accept = "application.json";
+										X-Api-Key = "\${RADARR_API_KEY}";
+									};
+									template = /*html*/ ''
+										<ul class="list list-gap-14 collapsible-container" data-collapse-after="5">
+										  {{ range .JSON.Array "records" }}
+										  <li>
+											  <div class="flex gap-10 row-reverse-on-mobile thumbnail-parent">
+												  <div class="shrink-0" data-popover-type="html">
+													<div data-popover-html="">
+														<img src="{{ .String "movie.images.0.remoteUrl" }}" loading="lazy" alt="">
+													</div>
+													<img class="twitch-category-thumbnail thumbnail" src="{{ .String "movie.images.0.remoteUrl" }}" alt="{{ .String "movie.title" }}" loading="lazy">
+												  </div>
+												  <div class="grow min-width-0">
+													  <a href="http://nixlab:7878/movie/{{ .String "movie.titleSlug" }}" class="color-highlight size-title-dynamic block text-truncate" target="_blank" rel="noreferrer">{{ .String "movie.title" }}</a>
+													  <ul class="list-horizontal-text flex-nowrap text-compact">
+														  <li class="shrink-0">{{ .String "movie.year" }}</li>
+														  <li class="shrink-0">{{ .String "movie.ratings.imdb.value" }}</li>
+													  </ul>
+													  <ul class="list-horizontal-text flex-nowrap text-truncate">
+														{{ range .Array "movie.genres" }}
+														  <li>{{ .String "" }}</li>
+														{{ end }}
+													  </ul>
+												  </div>
+											  </div>
+										  </li>
+										  {{ end }}
+										</ul>
+									'';
+								}
 							];
 						}
 					];
@@ -232,5 +250,7 @@
 			];
 		};
 	};
+
+	systemd.services.glance.serviceConfig.EnvironmentFile = config.age.secrets.radarr-api-key-env.path;
 
 }
