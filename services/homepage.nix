@@ -5,9 +5,11 @@
 		openFirewall = true;
 		settings = {
 			server.port = 3000;
-			server.host = "100.98.134.2";
+			server.host = "0.0.0.0";
 			branding = {
-				logo-url = "di:nixos";
+				logo-url = "https://evren.gay/assets/favicon.ico";
+				favicon-url = "https://evren.gay/assets/favicon.ico";
+				custom-footer = "made with estrogen :3";
 			};
 			theme = {
 				  background-color = "240 21 15";
@@ -23,6 +25,10 @@
 						{
 							size = "small";
 							widgets = [
+								{
+									type = "search";
+									search-engine = "duckduckgo";
+								}
 								{
 									type = "clock";
 									hour-format = "12h";
@@ -47,12 +53,17 @@
 											sites = [
 												{
 													title = "Jellyfin";
-													url = "http://nixlab:8096";
+													url = "https://jellyfin.evren.gay";
 													icon = "di:jellyfin";
 												}
 												{
+													title = "Immich";
+													url = "https://photos.evren.gay/";
+													icon = "di:immich";
+												}
+												{
 													title = "Jellyseerr";
-													url = "http://nixlab:5055";
+													url = "https://jellyseerr.evren.gay";
 													icon = "di:jellyseerr";
 												}
 												{
@@ -65,6 +76,21 @@
 													url = "http://nixlab:8989";
 													icon = "di:sonarr";
 												}
+												{
+													title = "Prowlarr";
+													url = "http://nixlab:9696";
+													icon = "di:prowlarr";
+												}
+												{
+													title = "qBitTorrent";
+													url = "http://100.98.134.2:6011";
+													icon = "di:qbittorrent";
+												}
+												# {
+												# 	title = "Gotify";
+												# 	utl = "https://gotify.evren.gay";
+												# 	icon = "di:gotify";
+												# }
 											];
 										}
 										{
@@ -75,10 +101,21 @@
 													color = "217 92 76";
 													links = [
 														{
-															title = "NixOS Wiki";
+															title = "Wiki";
 															url = "https://wiki.nixos.org/";
-															icon = "di:nixos";
+															# icon = "di:nixos";
 														}
+														{
+															title = "Options";
+															url = "https://search.nixos.org/options?channel=unstable";
+															# icon = "di:nixos";
+														}
+														{
+															title = "Packages";
+															url = "https://search.nixos.org/packages?channel=unstable";
+															# icon = "di:nixos";
+														}
+
 													];
 												}
 												{
@@ -149,6 +186,45 @@
 										}
 									];
 								}
+								# {
+								# 	# from https://gist.github.com/uykukacinca/a03598f591441dd8646e2502e99cb7c5
+								# 	type = "custom-api";
+								# 	title = "Recently Added Movies";
+								# 	cache = "5m";
+								# 	url = "http://localhost:7878/api/v3/history?eventType=3&includeMovie=true";
+								# 	headers = {
+								# 		Accept = "application.json";
+								# 		# X-Api-Key = "!import ${config.age.secrets.radarr-api-key.path}";
+								# 	};
+								# 	template = /*html*/ ''
+								# 		<ul class="list list-gap-14 collapsible-container" data-collapse-after="5">
+								# 		  {{ range .JSON.Array "records" }}
+								# 		  <li>
+								# 			  <div class="flex gap-10 row-reverse-on-mobile thumbnail-parent">
+								# 				  <div class="shrink-0" data-popover-type="html">
+								# 					<div data-popover-html="">
+								# 						<img src="{{ .String "movie.images.0.remoteUrl" }}" loading="lazy" alt="">
+								# 					</div>
+								# 					<img class="twitch-category-thumbnail thumbnail" src="{{ .String "movie.images.0.remoteUrl" }}" alt="{{ .String "movie.title" }}" loading="lazy">
+								# 				  </div>
+								# 				  <div class="grow min-width-0">
+								# 					  <a href="http://localhost:7878/movie/{{ .String "movie.titleSlug" }}" class="color-highlight size-title-dynamic block text-truncate" target="_blank" rel="noreferrer">{{ .String "movie.title" }}</a>
+								# 					  <ul class="list-horizontal-text flex-nowrap text-compact">
+								# 						  <li class="shrink-0">{{ .String "movie.year" }}</li>
+								# 						  <li class="shrink-0">{{ .String "movie.ratings.imdb.value" }}</li>
+								# 					  </ul>
+								# 					  <ul class="list-horizontal-text flex-nowrap text-truncate">
+								# 						{{ range .Array "movie.genres" }}
+								# 						  <li>{{ .String "" }}</li>
+								# 						{{ end }}
+								# 					  </ul>
+								# 				  </div>
+								# 			  </div>
+								# 		  </li>
+								# 		  {{ end }}
+								# 		</ul>
+								# 	'';
+								# }
 							];
 						}
 					];

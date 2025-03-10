@@ -1,6 +1,7 @@
 { config, lib, pkgs, ... }: {
 
 	imports = [
+		./paths.nix
 	];
 
 	time.timeZone = "America/Toronto";
@@ -10,6 +11,7 @@
 	users.defaultUserShell = pkgs.zsh;
 
 	nixpkgs.config.allowUnfree = true;
+	nixpkgs.config.allowBroken = true;
 	nix.settings.experimental-features = [
 		"nix-command"
 		"flakes"
@@ -34,6 +36,7 @@
 		snv = "sudo -e nvim";
 		fuck = "sudo $(fc -ln -1)";
 		nrs = "sudo nixos-rebuild switch --flake ${./..}";
+		nsp = "nix-shell -p";
 	};
 
 	networking = {
