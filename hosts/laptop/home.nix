@@ -1,6 +1,6 @@
 { config, lib, pkgs, ... }: {
 
-	imports = lib.lists.map (x: lib.path.append ../../common/home-manager x ) [
+	imports = lib.lists.map (x: ../../common/home-manager + x ) [
 	# Common Modules
 		/hyprland.nix
 		/catppuccin.nix
@@ -15,8 +15,18 @@
 		/mako.nix
 		/gtk.nix
 		/qt.nix
-	] ++ lib.lists.map (x: lib.path.append ./home-manager/ x ) [
+	] ++ lib.lists.map (x: ./home-manager + x ) [
 	# Host Modules
 	];
+
+	home.packages = with pkgs; [
+		swww
+		obsidian
+	];
+
+	home.shellAliases = {
+		hms = "home-manager switch --flake ~/flake#laptop";
+	}
+;	
 
 }

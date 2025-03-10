@@ -4,6 +4,8 @@
 	home.username = lib.mkDefault "evren";
 	home.homeDirectory = lib.mkDefault "/home/evren";
 
+	nixpkgs.config.allowUnfree = true;
+
 	imports = lib.lists.map (x: ./home-manager + x ) [
 		/zsh.nix
 		/nvim.nix
@@ -19,6 +21,9 @@
 		unzip
 		wl-clipboard
 	];
+
+	home.shellAliases = {
+	};
 
 	programs = {
 		home-manager.enable = true;

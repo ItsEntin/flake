@@ -10,7 +10,7 @@ wayland.windowManager.hyprland = {
 
 			border_size = 2;
 			"col.active_border" = "$accent";
-			"col.inactive_border" = "transparent";
+			"col.inactive_border" = "rgba(ffffff00)";
 		};
 
 		misc = {

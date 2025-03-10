@@ -23,6 +23,7 @@
 				modules = [
 					catppuccin.nixosModules.catppuccin
 					common/configuration.nix
+					hosts/laptop/configuration.nix
 				];
 			};
 			nixlab = lib.nixosSystem {

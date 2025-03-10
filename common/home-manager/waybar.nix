@@ -20,7 +20,7 @@ programs.waybar = {
 
 		modules-left = [ "custom/icon" "clock" "clock#date" "custom/hrt" "cpu" "disk" "memory" ];
 		modules-center = [ "hyprland/workspaces" ];
-		modules-right = [ "group/traydrawer" "network" "pulseaudio" "backlight" "battery" ];
+		modules-right = [ "group/traydrawer" "network" "pulseaudio" "backlight" "battery" "custom/swaync" ];
 
 		reload-style-on-change = true;
 
@@ -127,6 +127,11 @@ programs.waybar = {
 			};
 			format-low = "${toIconColor c.red.hex "󰂃"} {capacity}%";
 		};
+
+		# "custom/swaync" = {
+		# 	format = "{} ${icon}";
+		# 	
+		# };
 
 	};};
 	
