@@ -95,7 +95,7 @@
 												}
 												{
 													title = "qBitTorrent";
-													url = "http://100.98.134.2:6011";
+													url = "http://nixlab:6011";
 													icon = "di:qbittorrent";
 												}
 												{
