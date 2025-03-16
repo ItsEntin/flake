@@ -35,7 +35,6 @@
 		ll = "ls -lah";
 		snv = "sudo -e nvim";
 		fuck = "sudo $(fc -ln -1)";
-		nrs = "sudo nixos-rebuild switch --flake ${./..}";
 		nsp = "nix-shell -p";
 	};
 

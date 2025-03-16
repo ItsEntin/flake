@@ -59,20 +59,6 @@ time.timeZone = "America/Toronto";
 services.xserver.xkb.layout = "us";
 services.xserver.xkb.options = "caps:escape";
 
-console = {
-};
-
-  # Enable CUPS to print documents.
-  # services.printing.enable = true;
-
-  # Enable sound.
-  # hardware.pulseaudio.enable = true;
-  # OR
-  # services.pipewire = {
-  #   enable = true;
-  #   pulse.enable = true;
-  # };
-
 users.users.evren = {
 	isNormalUser = true;
 	extraGroups = [ "wheel" "networkmanager" "video" "docker" ];
@@ -85,6 +71,10 @@ users.users.evren = {
 
 programs.zsh.enable = true;
 users.defaultUserShell = pkgs.zsh;
+
+environment.shellAliases = {
+	nrs = "sudo nixos-rebuild switch --flake /home/evren/flake#nixos";
+};
 
 nixpkgs.config.allowUnfree = true;
 nix.settings.experimental-features = [
@@ -102,11 +92,14 @@ environment.systemPackages = with pkgs; [
 	imv
 	mpv
 	vlc
+	pavucontrol
+	blueman
 	mangohud
 	javaPackages.openjfx21
 	libGL
 	sshfs
 	(jdk21.override { enableJavaFX = true; })
+	direnv
 ];
 
 fonts.packages = with pkgs; [

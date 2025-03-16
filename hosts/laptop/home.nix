@@ -15,6 +15,7 @@
 		/mako.nix
 		/gtk.nix
 		/qt.nix
+		# /spotify.nix
 	] ++ lib.lists.map (x: ./home-manager + x ) [
 	# Host Modules
 	];
@@ -22,10 +23,11 @@
 	home.packages = with pkgs; [
 		swww
 		obsidian
+		jellyfin-media-player
 	];
 
 	home.shellAliases = {
-		hms = "home-manager switch --flake ~/flake#laptop";
+		hms = "home-manager switch --flake ~/flake#nixos";
 	}
 ;	
 

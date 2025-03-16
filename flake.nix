@@ -9,6 +9,10 @@
 		};
 		catppuccin.url = "github:catppuccin/nix";
 		agenix.url = "github:ryantm/agenix";
+		spicetify-nix = {
+			url = "github:Gerg-L/spicetify-nix";
+			inputs.nixpkgs.follows = "nixpkgs";
+		};
 	};
 
 	outputs = inputs@{ self, nixpkgs, home-manager, catppuccin, ... }: let
@@ -46,6 +50,7 @@
 				pkgs = import nixpkgs { system = "x86_64-linux"; };
 				modules = [
 					catppuccin.homeManagerModules.catppuccin
+					inputs.spicetify-nix.homeManagerModules.default
 					common/home.nix
 					hosts/laptop/home.nix
 				];
