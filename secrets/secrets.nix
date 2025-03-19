@@ -14,4 +14,6 @@ in
 	"gluetun-conf.age".publicKeys = [ nixlab ];
 	"radarr-api-key.age".publicKeys = [ nixlab ];
 	"radarr-api-key-env.age".publicKeys = [ nixlab ];
+	"immich-api-key-env.age".publicKeys = [ nixlab ];
+	"jellyfin-api-key-env.age".publicKeys = [ nixlab ];
 }

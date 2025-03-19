@@ -17,8 +17,8 @@
 		./immich.nix
 		./torrent.nix
 		./pufferpanel.nix
-		./mealie.nix
 		./gotify.nix
+		./pufferpanel.nix
 	];
 
 }

@@ -5,7 +5,6 @@
 		openFirewall = true;
 		settings = {
 			server.port = 3000;
-			# server.host = "localhost";
 			branding = {
 				# logo-url = "https://evren.gay/assets/favicon.ico";
 				logo-url = "https://nixos.org/favicon.ico";
@@ -54,6 +53,63 @@
 													
 												};
 											};
+										}
+									];
+								}
+								{
+									type = "split-column";
+									widgets = [
+										{
+											type = "custom-api";
+											title = "Jellyfin Stats";
+											cache = "1h";
+											url = "http://localhost:8096/api/Items/Counts";
+											headers = {
+												Authorization = "MediaBrowser Token='\${JELLYFIN_API_KEY}'";
+												Accept = "application/json";
+											};
+											template = /*html*/ ''
+												<div class="flex justify-between text-center">
+													<div>
+														<div class="color-highlight size-h3">{{ .JSON.Int "MovieCount" | formatNumber }}</div>
+														<div class="size-h6">MOVIES</div>
+													</div>
+													<div>
+														<div class="color-highlight size-h3">{{ .JSON.Int "SeriesCount" | formatNumber }}</div>
+														<div class="size-h6">SERIES</div>
+													</div>
+													<div>
+														<div class="color-highlight size-h3">{{ div (.JSON.Int "EpisodeCount" | toFloat) 1073741824 | toInt | formatNumber }}GB</div>
+														<div class="size-h6">EPISODES</div>
+													</div>
+												</div>
+											'';
+										}
+										{
+											type = "custom-api";
+											title = "Immich Stats";
+											cache = "1h";
+											url = "http://localhost:2283/api/server/statistics";
+											headers = {
+												x-api-key = "\${IMMICH_API_KEY}";
+												Accept = "application/json";
+											};
+											template = /*html*/ ''
+												<div class="flex justify-between text-center">
+													<div>
+														<div class="color-highlight size-h3">{{ .JSON.Int "photos" | formatNumber }}</div>
+														<div class="size-h6">PHOTOS</div>
+													</div>
+													<div>
+														<div class="color-highlight size-h3">{{ .JSON.Int "videos" | formatNumber }}</div>
+														<div class="size-h6">VIDEOS</div>
+													</div>
+													<div>
+														<div class="color-highlight size-h3">{{ div (.JSON.Int "usage" | toFloat) 1073741824 | toInt | formatNumber }}GB</div>
+														<div class="size-h6">USAGE</div>
+													</div>
+												</div>
+											'';
 										}
 									];
 								}
@@ -243,6 +299,32 @@
 										</ul>
 									'';
 								}
+								# {
+								# 	type = "custom-api";
+								# 	title = "Immich Stats";
+								# 	cache = "1h";
+								# 	url = "http://localhost:2283/api/server/statistics";
+								# 	headers = {
+								# 		x-api-key = "\${IMMICH_API_KEY}";
+								# 		Accept = "application/json";
+								# 	};
+								# 	template = /*html*/ ''
+								# 		<div class="flex justify-between text-center">
+								# 			<div>
+								# 				<div class="color-highlight size-h3">{{ .JSON.Int "photos" | formatNumber }}</div>
+								# 				<div class="size-h6">PHOTOS</div>
+								# 			</div>
+								# 			<div>
+								# 				<div class="color-highlight size-h3">{{ .JSON.Int "videos" | formatNumber }}</div>
+								# 				<div class="size-h6">VIDEOS</div>
+								# 			</div>
+								# 			<div>
+								# 				<div class="color-highlight size-h3">{{ div (.JSON.Int "usage" | toFloat) 1073741824 | toInt | formatNumber }}GB</div>
+								# 				<div class="size-h6">USAGE</div>
+								# 			</div>
+								# 		</div>
+								# 	'';
+								# }
 							];
 						}
 					];
@@ -251,6 +333,10 @@
 		};
 	};
 
-	systemd.services.glance.serviceConfig.EnvironmentFile = config.age.secrets.radarr-api-key-env.path;
+	systemd.services.glance.serviceConfig.EnvironmentFile = [ 
+		config.age.secrets.radarr-api-key-env.path 
+		config.age.secrets.immich-api-key-env.path
+		config.age.secrets.jellyfin-api-key-env.path
+	];
 
 }
