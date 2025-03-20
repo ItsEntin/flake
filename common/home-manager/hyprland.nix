@@ -3,7 +3,7 @@
 wayland.windowManager.hyprland = {
 	enable = true;
 	settings = {
-		exec-once = [ "waybar" "swww-daemon" ];
+		exec-once = [ "waybar" "swww-daemon" "blueman-applet" ];
 		general = {
 			gaps_in = 4;
 			gaps_out = 8;
