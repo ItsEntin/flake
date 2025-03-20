@@ -13,6 +13,7 @@
 			url = "github:Gerg-L/spicetify-nix";
 			inputs.nixpkgs.follows = "nixpkgs";
 		};
+		nix-minecraft.url = "github:Infinidoge/nix-minecraft";
 	};
 
 	outputs = inputs@{ self, nixpkgs, home-manager, catppuccin, ... }: let
