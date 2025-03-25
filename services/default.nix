@@ -10,6 +10,8 @@
 	};
 
 	imports = [
+		./minecraft
+
 		./cloudflared.nix
 
 		./media.nix

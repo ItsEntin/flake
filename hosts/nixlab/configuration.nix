@@ -46,7 +46,11 @@
 	};
 
 	services = {
-		openssh.enable = true;
+		openssh = {
+			enable = true;
+			settings = {
+			};
+		};
 		tailscale.enable = true;
 	};
 
