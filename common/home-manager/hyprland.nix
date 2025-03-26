@@ -118,6 +118,6 @@ wayland.windowManager.hyprland = {
 			# disable_scale_checks = true;
 		};
 	};
-};
+} // config.theme.programs.hyprland;
 
 }
