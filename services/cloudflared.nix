@@ -16,7 +16,7 @@
 					"jellyseerr.evren.gay" = "http://localhost:5055";
 					"gotify.evren.gay" = "http://localhost:8108";
 					"dtbylg.mc.evren.gay" = "tcp://localhost:25565";
-					"mealie.evren.gay" = "http://localhost:9000";
+					"recipes.evren.gay" = "http://localhost:9050";
 				};
 			};
 		};
