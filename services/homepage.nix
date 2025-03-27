@@ -26,6 +26,24 @@
 							size = "small";
 							widgets = [
 								{
+									type = "clock";
+									hour-format = "12h";
+								}
+								{
+									type = "weather";
+									location = "Ottawa, Canada";
+								}
+							];
+						}
+					];
+				}
+				{
+					name = "Services";
+					columns = [
+						{
+							size = "small";
+							widgets = [
+								{
 									type = "search";
 									search-engine = "duckduckgo";
 								}
