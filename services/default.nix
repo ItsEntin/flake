@@ -21,6 +21,8 @@
 		./pufferpanel.nix
 		./gotify.nix
 		./pufferpanel.nix
+		./mealie.nix
+		./kitchenowl.nix
 	];
 
 }

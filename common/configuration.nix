@@ -2,6 +2,7 @@
 
 	imports = [
 		./paths.nix
+		./modules
 	];
 
 	time.timeZone = "America/Toronto";
