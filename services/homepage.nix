@@ -18,7 +18,58 @@
 				  positive-color = "115 54 76";
 				  negative-color = "347 70 65";
   			};
-			pages = [
+			pages = let
+				serviceList = {
+					type = "monitor";
+					sites = [
+						{
+							title = "Jellyfin";
+							url = "https://jellyfin.evren.gay";
+							icon = "di:jellyfin";
+						}
+						{
+							title = "Immich";
+							url = "https://photos.evren.gay/";
+							icon = "di:immich";
+						}
+						{
+							title = "Jellyseerr";
+							url = "https://jellyseerr.evren.gay";
+							icon = "di:jellyseerr";
+						}
+						{
+							title = "Radarr";
+							url = "http://nixlab:7878";
+							icon = "di:radarr";
+						}
+						{
+							title = "Sonarr";
+							url = "http://nixlab:8989";
+							icon = "di:sonarr";
+						}
+						{
+							title = "Prowlarr";
+							url = "http://nixlab:9696";
+							icon = "di:prowlarr";
+						}
+						{
+							title = "qBitTorrent";
+							url = "http://nixlab:6011";
+							icon = "di:qbittorrent";
+						}
+						{
+							title = "Gotify";
+							url = "http://nixlab:8108";
+							icon = "di:gotify";
+						}
+						{
+							title = "KitchenOwl";
+							url = "https://recipes.evren.gay";
+							icon = "di:kitchenowl";
+						}
+					];
+				};
+			in [
 				{
 					name = "Home";
 					columns = [
@@ -33,6 +84,44 @@
 									type = "weather";
 									location = "Ottawa, Canada";
 								}
+								{
+									type = "calendar";
+									first-day-of-week = "sunday";
+								}
+							];
+						}
+						{
+							size = "full";
+							widgets = [
+								{
+									type = "search";
+									search-engine = "duckduckgo";
+								}
+								{
+									type = "rss";
+									title = "WIRED";
+									style = "horizontal-cards";
+									feeds = [
+										{
+											url = "https://www.wired.com/feed/category/ideas/latest/rss";
+											title = "IDEAS";
+										}
+										{
+											url = "https://www.wired.com/feed/category/politics/latest/rss";
+											title = "POLITICS";
+										}
+										{
+											url = "https://www.wired.com/feed/category/culture/latest/rss";
+											title = "CULTURE";
+										}
+									];
+								}
+							];
+						}
+						{
+							size = "small";
+							widgets = [
+								serviceList
 							];
 						}
 					];
@@ -134,7 +223,8 @@
 								{
 									type = "split-column";
 									widgets = [
-										{
+										serviceList
+										/*{
 											type = "monitor";
 											sites = [
 												{
@@ -178,7 +268,7 @@
 													icon = "di:gotify";
 												}
 											];
-										}
+										} */
 										{
 											type = "bookmarks";
 											groups = [
