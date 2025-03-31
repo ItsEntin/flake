@@ -15,6 +15,7 @@
 		/mako.nix
 		/gtk.nix
 		/qt.nix
+		/swaync.nix
 		# /spotify.nix
 	] ++ lib.lists.map (x: ./home-manager + x ) [
 	# Host Modules

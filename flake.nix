@@ -59,6 +59,7 @@
 					inputs.spicetify-nix.homeManagerModules.default
 					common/home.nix
 					hosts/laptop/home.nix
+					./themes
 				];
 			};
 			nixlab = home-manager.lib.homeManagerConfiguration {
