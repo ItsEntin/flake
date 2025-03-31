@@ -25,6 +25,7 @@
 			"networkmanager"
 			"video"
 			"docker"
+			"minecraft"
 		];
 		initialPassword = "password";
 	};
@@ -37,6 +38,8 @@
 		snv = "sudo -e nvim";
 		fuck = "sudo $(fc -ln -1)";
 		nsp = "nix-shell -p";
+		sctl = "systemctl";
+		jctl = "journalctl -u";
 	};
 
 	networking = {

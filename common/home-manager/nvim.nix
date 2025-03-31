@@ -101,6 +101,7 @@ in
 			vim.o.mousemoveevent = true
 			require('bufferline').setup ({
 				options = {
+					always_show_bufferline = false,
 					close_command = "bd %d",
 					right_mouse_command = "bd %d",
 					indicator = {style = "none"},

@@ -13,6 +13,7 @@
 		./minecraft
 
 		./cloudflared.nix
+		./zerotier.nix
 
 		./media.nix
 		./homepage.nix

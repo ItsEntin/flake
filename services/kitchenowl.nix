@@ -1,6 +1,7 @@
 { config, lib, pkgs, ... }: {
 
-	composeStacks.kitchenowl = {
+	compose.enable = true;
+	compose.stacks.kitchenowl = {
 		enable = true;
 		requireNetwork = true;
 		stack = {

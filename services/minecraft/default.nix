@@ -4,13 +4,14 @@
 		inputs.nix-minecraft.nixosModules.minecraft-servers 
 
 		./dtbylg.nix
+		./wife.nix
 	];
 	nixpkgs.overlays = [ inputs.nix-minecraft.overlay ];
 
 	services.minecraft-servers = {
 		enable = true;
 		eula = true;
-		dataDir = config.paths.minecraftServers;
+		dataDir = "/mnt/hdd/minecraft";
 		openFirewall = true;
 	};
 
@@ -23,7 +24,9 @@
 	)];
 
 	systemd.services.mc-backup = let 
-		script = '''';
+		script = pkgs.writeShellScriptBin "mc-backup.sh" ''
+			
+		'';
 	in {
 		serviceConfig = {
 			Type = "oneshot";
