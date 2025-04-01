@@ -1,7 +1,7 @@
 { config, pkgs, ... }: {
 
 services.mako = {
-	enable = true;
+	enable = false;
 	
 };
 

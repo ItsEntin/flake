@@ -25,6 +25,13 @@
 	home.shellAliases = {
 	};
 
+	home.pointerCursor = {
+		name = "phinger-cursors-dark";
+		package = pkgs.phinger-cursors;
+		size = 24;
+		gtk.enable = true;
+	};
+
 	programs = {
 		home-manager.enable = true;
 	};

@@ -18,9 +18,26 @@ programs.waybar = {
 		height = 40;
 		spacing = 0;
 
-		modules-left = [ "custom/icon" "clock" "clock#date" "custom/hrt" "cpu" "disk" "memory" ];
-		modules-center = [ "hyprland/workspaces" ];
-		modules-right = [ "group/traydrawer" "network" "pulseaudio" "backlight" "battery" "custom/swaync" ];
+		modules-left = [ 
+			"custom/icon" 
+			"clock" 
+			"clock#date" 
+			"custom/hrt" 
+			"cpu" 
+			"disk" 
+			"memory" 
+		];
+		modules-center = [ 
+			"hyprland/workspaces" 
+		];
+		modules-right = [
+			"group/traydrawer" 
+			"network" 
+			"pulseaudio" 
+			"backlight" 
+			"battery" 
+			(lib.mkIf config.services.swaync.enable "custom/swaync")
+		];
 
 		reload-style-on-change = true;
 
@@ -128,10 +145,21 @@ programs.waybar = {
 			format-low = "${toIconColor c.red.hex "󰂃"} {capacity}%";
 		};
 
-		# "custom/swaync" = {
-		# 	format = "{} ${icon}";
-		# 	
-		# };
+		"custom/swaync" = let
+			client = "${config.services.swaync.package}/bin/swaync-client";
+		in lib.mkIf config.services.swaync.enable {
+			format = "${icon} {}";
+			format-icons = {
+				none = "󰂚";
+				notification = "󱅫";
+				dnd-none = "󰂜";
+				dnd-notification = "󰅸";
+			};
+			exec = "${client} -swb";
+			return-type = "json";
+			on-click = "${client} -t -sw";
+			on-click-right = "${client} -d";
+		};
 
 	};};
 	
