@@ -28,6 +28,7 @@ in
 			tabstop = 4; # Tab width
 			shiftwidth = 4; # Tab width
 			wrap = false; # Wrap lines
+			cursorline = true;
 		});
 
 	# Keybinds

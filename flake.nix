@@ -55,7 +55,7 @@
 			nixos = home-manager.lib.homeManagerConfiguration {
 				pkgs = import nixpkgs { system = "x86_64-linux"; };
 				modules = [
-					catppuccin.homeManagerModules.catppuccin
+					catppuccin.homeModules.catppuccin
 					inputs.spicetify-nix.homeManagerModules.default
 					common/home.nix
 					hosts/laptop/home.nix
@@ -65,7 +65,7 @@
 			nixlab = home-manager.lib.homeManagerConfiguration {
 				pkgs = import nixpkgs { system = "x86_64-linux"; };
 				modules = [
-					catppuccin.homeManagerModules.catppuccin
+					catppuccin.homeModules.catppuccin
 					common/home.nix
 					hosts/nixlab/home.nix
 				];

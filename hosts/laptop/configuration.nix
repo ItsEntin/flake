@@ -16,8 +16,14 @@ system.stateVersion = "24.11"; # Do not change!
 # Use the systemd-boot EFI boot loader.
 boot.loader.systemd-boot.enable = true;
 boot.loader.efi.canTouchEfiVariables = true;
-
 boot.loader.grub.device = "nodev";
+
+services.displayManager.sddm = {
+	enable = true;
+	wayland.enable = true;
+	theme = "where-is-my-sddm-theme";
+	extraPackages = [pkgs.where-is-my-sddm-theme];
+};
 
 networking.networkmanager.enable = true;
 hardware.bluetooth.enable = true;
@@ -32,20 +38,6 @@ fileSystems = {
 		fsType = "vfat";
 		options = [ "fmask=0022" "dmask=0022" ];
 	};
-	# "/mnt/nixlab" = {
-	# 	device = "evren@100.98.134.2";
-	# 	fsType = "sshfs";
-	# 	options = [
-	# 		"allow_other" # Allow non-root access
-	# 		"_netdev" # Requires network to mount
-	# 		"x-systemd.automount" # Mount on demand
-	# 		"debug"
-	#
-	# 		"reconnect"
-	# 		"ServerAliveInterval=1"
-	# 		"IdentityFile=/root/.ssh/id_ed25519" # SSH Key for authentication
-	# 	];
-	# };
 };
 
 networking.interfaces.enp0s31f6.ipv4.addresses = [{
