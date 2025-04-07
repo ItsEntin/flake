@@ -3,6 +3,7 @@
 	services.minecraft-servers.servers.wife = {
 		enable = true;
 		package = pkgs.fabricServers.fabric-1_21;
+		jvmOpts = "-Xms6144M -Xmx16000M";
 		serverProperties = {
 			server-port = 25566;
 			motd = "I LOVE YOUUUUUU !!!!!";

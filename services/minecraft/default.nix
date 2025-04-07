@@ -8,6 +8,8 @@
 	];
 	nixpkgs.overlays = [ inputs.nix-minecraft.overlay ];
 
+	users.users.evren.extraGroups = [ "minecraft" ];
+
 	services.minecraft-servers = {
 		enable = true;
 		eula = true;

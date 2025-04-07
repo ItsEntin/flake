@@ -39,6 +39,7 @@
 		fuck = "sudo $(fc -ln -1)";
 		nsp = "nix-shell -p";
 		sctl = "systemctl";
+		ssctl = "sudo systemctl";
 		jctl = "journalctl -u";
 	};
 
