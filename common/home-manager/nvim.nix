@@ -49,6 +49,7 @@ in
 	extraPackages = with pkgs; [
 		nixd
 		lua-language-server
+		rust-analyzer
 	];
 
 	plugins = 
@@ -76,15 +77,18 @@ in
 				},
 			})
 			lsp.lua_ls.setup {}
-			for _, diag in ipairs({ "Error", "Warn", "Info", "Hint" }) do
-				vim.fn.sign_define("DiagnosticSign" .. diag, {
-					text = "",
-					texthl = "DiagnosticSign" .. diag,
-					linehl = "",
-					numhl = "DiagnosticSign" .. diag,
-				})
-			end
-			'';
+			-- for _, diag in ipairs({ "Error", "Warn", "Info", "Hint" }) do
+			-- 	vim.fn.sign_define("DiagnosticSign" .. diag, {
+			-- 		text = "",
+			-- 		texthl = "DiagnosticSign" .. diag,
+			-- 		linehl = "",
+			-- 		numhl = "DiagnosticSign" .. diag,
+			-- 	})
+			-- end
+		'';
+		trouble-nvim = /*lua*/ ''
+			require("trouble").setup{}
+		'';
 		which-key-nvim = "";
 		render-markdown-nvim = /*lua*/ ''
 			require("render-markdown").setup({
@@ -207,6 +211,7 @@ in
 				
 			})
 		'';
+		rustaceanvim = "";
 		lualine-nvim = 
 			let
 				setColor = default: fallback: if (c.${default}.hex == accent.hex) then c.${fallback}.hex else c.${default}.hex;

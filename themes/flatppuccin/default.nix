@@ -9,8 +9,6 @@
 		enable = true;
 		flavor = "mocha";
 		accent = "pink";
-		
-		sddm.enable = false;
 	};
 
 }

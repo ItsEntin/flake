@@ -2,6 +2,9 @@
 
 wayland.windowManager.hyprland = {
 	enable = true;
+	plugins = with pkgs.hyprlandPlugins; [
+		# hyprbars
+	];
 	settings = {
 		exec-once = [ "waybar" "swww-daemon" "blueman-applet" ];
 		general = {
@@ -59,15 +62,20 @@ wayland.windowManager.hyprland = {
 			", preferred, auto, 0.9"
 		];
 
-		bind = [
+		bind = 
+		let
+			dispatch = "${pkgs.hyprland}/bin/hyprctl dispatch";
+		in [
 			"SUPER, return, exec, kitty" # Open Kitty
 			"SUPER, space, exec, rofi -show drun" # Open Rofi
 			"SUPER, Shift_R, exec, firefox" # Open Firefox
 			"SUPER, q, killactive" # Kill current window
 			"SUPER, esc, exit" # Exit Hyprland
 
-			"SUPER, f, fullscreen" # Fullscreen current window
+			"SUPER, f, fullscreen, 0" # Fullscreen current window
+			"SUPER, w, fullscreen, 1" # Maximize current window
 			"SUPER, s, togglefloating" # Toggle current window floating/tiling
+			"SUPER, g, togglegroup" # Toggle grouped window
 
 			"SUPER, tab, workspace, m+1"
 
@@ -81,7 +89,20 @@ wayland.windowManager.hyprland = {
 			'',Print, exec, ${pkgs.grim}/bin/grim -g "$(${pkgs.slurp}/bin/slurp -w 0 -d)" - | wl-copy && ${pkgs.libnotify}/bin/notify-send "Screenshot taken!" "Image copied to clipboard."''
 			''Shift, Print, exec, ${pkgs.grim}/bin/grim -g "$(${pkgs.slurp}/bin/slurp -w 0 -d)" && ${pkgs.libnotify}/bin/notify-send "Screenshot taken!" "Image saved to ~/Pictures"''
 
+			''SUPER SHIFT, c, exec, ${pkgs.writeShellScriptBin "color-picker" ''
+				color = $(${pkgs.hyprpicker}/bin/hyprpicker)
+				wl-copy $color
+				notify-send "Color copied to clipboard" $color
+			''}''
+
 			"Super Shift Alt Control, L, exec, xdg-open https://linkedin.com/"
+
+			# "SUPER, `, exec, ${pkgs.writeShellScriptBin "toggleStackLayout" ''
+			# 	echo starting
+			# 	if (); then
+			# 		${dispatch} 
+			# 	else
+			# ''}"
 			
 			] ++ (
 			# Switch workspace / move window to workspace
@@ -108,15 +129,24 @@ wayland.windowManager.hyprland = {
 		];
 		windowrulev2 = [
 			"noborder, onworkspace:w[t1]"
+			"plugin:hyprbars:nobar, onworkspace:n[e:s]"
 			] ++ lib.lists.forEach [
 			# Float windows with class:
 				"nm-connection-editor"
 			] (windowClass: "float, class:(${windowClass})"
-		);
+			);
 
 		debug = {
 			# disable_scale_checks = true;
 		};
+		
+		# plugin = {
+		# 	hyprbars = {
+		# 		hyprbars-button = [
+		# 			"#1e1e2e,5,m,fullscreen,"
+		# 		];
+		# 	};
+		# };
 	};
 };
 

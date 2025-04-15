@@ -8,6 +8,8 @@
   imports =
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
+
+	  ../../common/system/neovim.nix
     ];
 
 networking.hostName = "nixos";
@@ -24,6 +26,7 @@ services.displayManager.sddm = {
 	theme = "where-is-my-sddm-theme";
 	extraPackages = [pkgs.where-is-my-sddm-theme];
 };
+catppuccin.sddm.enable = false;
 
 networking.networkmanager.enable = true;
 hardware.bluetooth.enable = true;
@@ -92,6 +95,8 @@ environment.systemPackages = with pkgs; [
 	sshfs
 	(jdk21.override { enableJavaFX = true; })
 	direnv
+	rustup
+	cargo
 ];
 
 fonts.packages = with pkgs; [

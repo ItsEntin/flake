@@ -25,6 +25,7 @@
 		swww
 		obsidian
 		jellyfin-media-player
+		vesktop
 	];
 
 	home.shellAliases = {

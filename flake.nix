@@ -31,6 +31,7 @@
 				specialArgs = { inherit inputs; };
 				modules = [
 					catppuccin.nixosModules.catppuccin
+					inputs.nixvim.nixosModules.nixvim
 					common/configuration.nix
 					hosts/laptop/configuration.nix
 					./themes

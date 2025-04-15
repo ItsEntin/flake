@@ -3,6 +3,7 @@
 	imports = [
 		./paths.nix
 		./modules
+		# ./system/neovim.nix
 	];
 
 	time.timeZone = "America/Toronto";
@@ -54,6 +55,7 @@
 	];
 
 	programs = {
+		direnv.enable = true;
 		neovim = {
 			enable = true;
 			defaultEditor = true;

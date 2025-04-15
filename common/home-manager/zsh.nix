@@ -22,6 +22,7 @@ programs.zsh = {
 		PS1='%~ > '
 		WORDCHARS=""
 		bindkey '^H' backward-kill-word
+		eval "$(direnv hook zsh)"
 	'';
 	completionInit = /*sh*/ ''
 		zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}'

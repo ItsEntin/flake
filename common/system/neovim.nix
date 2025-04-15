@@ -1,7 +1,5 @@
 { config, lib, pkgs, inputs, ... }: {
 
-	imports = [ inputs.nixvim.nixosModules.nixvim ];
-
 	programs.nixvim = {
 		enable = true;
 		defaultEditor = true;
@@ -17,18 +15,19 @@
 			wrap = false;
 			cursorline = true;
 		};
-		keymaps = let
-			map = mode: key: action: { inherit mode; inherit key; inherit action; };
-			nmap = key: action: map "n" key action;
-			imap = key: action: map "i" key action;
-		in [
-			nmap "J" "10j<CR>"
-			nmap "K" "10k<CR>"
-
-			imap "<C-BS>" "<C-W>"
-		];
+		# keymaps = let
+		# 	map = mode: key: action: { inherit mode; inherit key; inherit action; };
+		# 	nmap = key: action: map "n" key action;
+		# 	imap = key: action: map "i" key action;
+		# in [
+		# 	nmap "J" "10j<CR>"
+		# 	nmap "K" "10k<CR>"
+		#
+		# 	imap "<C-BS>" "<C-W>"
+		# ];
 		plugins = {
 			comment.enable = true;
+			web-devicons.enable = true;
 			bufferline = {
 				enable = true;
 				settings = {

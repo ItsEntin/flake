@@ -6,4 +6,6 @@ programs.rofi = {
 	font = "JetBrains Mono";
 };
 
+catppuccin.rofi.enable = true;
+
 }
