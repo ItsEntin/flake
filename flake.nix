@@ -20,28 +20,46 @@
 		};
 	};
 
-	outputs = inputs@{ self, nixpkgs, home-manager, catppuccin, ... }: let
+	outputs = inputs@{ self, nixpkgs, home-manager, ... }: let
 		lib = nixpkgs.lib;
 		system = "x86_64-linux";
 	in {
 
-		nixosConfigurations = {
-			nixos = lib.nixosSystem {
+		nixosConfigurations = let
+
+			common = {
 				inherit system;
 				specialArgs = { inherit inputs; };
-				modules = [
-					catppuccin.nixosModules.catppuccin
-					inputs.nixvim.nixosModules.nixvim
-					common/configuration.nix
-					hosts/laptop/configuration.nix
+			};
+			modules = [
+				inputs.catppuccin.nixosModules.catppuccin
+				inputs.nixvim.nixosModules.nixvim
+				inputs.agenix.nixosModules.default
+				
+				common/configuration.nix
+			];
+
+		in{
+
+			thinkpad = lib.nixosSystem ( common // {
+				modules = modules ++ [
+					./hosts/thinkpad/configuration.nix
 					./themes
 				];
-			};
+			});
+
+			msi = lib.nixosSystem ( common // {
+				modules = modules ++ [
+					./hosts/msi
+					./themes
+				];
+			});
+
 			nixlab = lib.nixosSystem {
 				inherit system;
 				specialArgs = { inherit inputs; };
 				modules = [
-					catppuccin.nixosModules.catppuccin
+					inputs.catppuccin.nixosModules.catppuccin
 					inputs.agenix.nixosModules.default
 
 					common/configuration.nix
@@ -56,7 +74,7 @@
 			nixos = home-manager.lib.homeManagerConfiguration {
 				pkgs = import nixpkgs { system = "x86_64-linux"; };
 				modules = [
-					catppuccin.homeModules.catppuccin
+					inputs.catppuccin.homeModules.catppuccin
 					inputs.spicetify-nix.homeManagerModules.default
 					common/home.nix
 					hosts/laptop/home.nix
@@ -66,7 +84,7 @@
 			nixlab = home-manager.lib.homeManagerConfiguration {
 				pkgs = import nixpkgs { system = "x86_64-linux"; };
 				modules = [
-					catppuccin.homeModules.catppuccin
+					inputs.catppuccin.homeModules.catppuccin
 					common/home.nix
 					hosts/nixlab/home.nix
 				];

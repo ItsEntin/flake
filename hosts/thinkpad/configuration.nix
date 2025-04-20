@@ -44,7 +44,7 @@ fileSystems = {
 };
 
 networking.interfaces.enp0s31f6.ipv4.addresses = [{
-	address = "192.168.137.3";
+	address = "10.1.1.3";
 	prefixLength = 24;
 }];
 
@@ -68,7 +68,7 @@ programs.zsh.enable = true;
 users.defaultUserShell = pkgs.zsh;
 
 environment.shellAliases = {
-	nrs = "sudo nixos-rebuild switch --flake /home/evren/flake#nixos";
+	nrs = "sudo nixos-rebuild switch --flake /home/evren/flake#thinkpad";
 };
 
 nixpkgs.config.allowUnfree = true;
@@ -126,14 +126,6 @@ programs.steam = {
 	gamescopeSession.enable = true;
 };
 programs.gamemode.enable = true;
-
-programs.git = {
-	enable = true;
-};
-
-services.tailscale = {
-	enable = true;
-};
 
 programs.java = {
 	enable = true;

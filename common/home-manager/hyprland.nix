@@ -6,7 +6,12 @@ wayland.windowManager.hyprland = {
 		# hyprbars
 	];
 	settings = {
-		exec-once = [ "waybar" "swww-daemon" "blueman-applet" ];
+		# exec-once = [ "waybar" "swww-daemon" "blueman-applet" ];
+		exec-once = [
+			"${pkgs.waybar}/bin/waybar"
+			"${pkgs.swww}/bin/swww-daemon"
+			"${pkgs.blueman}/bin/blueman-applet"
+		];
 		general = {
 			gaps_in = 4;
 			gaps_out = 8;
@@ -66,9 +71,9 @@ wayland.windowManager.hyprland = {
 		let
 			dispatch = "${pkgs.hyprland}/bin/hyprctl dispatch";
 		in [
-			"SUPER, return, exec, kitty" # Open Kitty
+			"SUPER, return, exec, ${pkgs.kitty}/bin/kitty" # Open Kitty
 			"SUPER, space, exec, rofi -show drun" # Open Rofi
-			"SUPER, Shift_R, exec, firefox" # Open Firefox
+			"SUPER, Shift_R, exec, ${pkgs.firefox}/bin/firefox" # Open Firefox
 			"SUPER, q, killactive" # Kill current window
 			"SUPER, esc, exit" # Exit Hyprland
 
@@ -89,10 +94,10 @@ wayland.windowManager.hyprland = {
 			'',Print, exec, ${pkgs.grim}/bin/grim -g "$(${pkgs.slurp}/bin/slurp -w 0 -d)" - | wl-copy && ${pkgs.libnotify}/bin/notify-send "Screenshot taken!" "Image copied to clipboard."''
 			''Shift, Print, exec, ${pkgs.grim}/bin/grim -g "$(${pkgs.slurp}/bin/slurp -w 0 -d)" && ${pkgs.libnotify}/bin/notify-send "Screenshot taken!" "Image saved to ~/Pictures"''
 
-			''SUPER SHIFT, c, exec, ${pkgs.writeShellScriptBin "color-picker" ''
-				color = $(${pkgs.hyprpicker}/bin/hyprpicker)
-				wl-copy $color
-				notify-send "Color copied to clipboard" $color
+			''SUPER, c, exec, ${pkgs.writeShellScriptBin "color-picker" ''
+				color = $(${pkgs.hyprpicker}/bin/hyprpicker -a)
+				${pkgs.wl-clipboard}/bin/wl-copy $color
+				${pkgs.libnotify}/bin/notify-send "Color copied to clipboard" $color
 			''}''
 
 			"Super Shift Alt Control, L, exec, xdg-open https://linkedin.com/"
@@ -130,11 +135,17 @@ wayland.windowManager.hyprland = {
 		windowrulev2 = [
 			"noborder, onworkspace:w[t1]"
 			"plugin:hyprbars:nobar, onworkspace:n[e:s]"
-			] ++ lib.lists.forEach [
 			# Float windows with class:
+			] ++ lib.lists.map (class: "float, class:(.*${class}.*)") [
 				"nm-connection-editor"
-			] (windowClass: "float, class:(${windowClass})"
-			);
+				"blueman"
+			# Always full brightness:
+			] ++ lib.lists.map (title: "nodim, title:(.*${title}).*") [
+				"YouTube"
+				"Disney"
+				"Dropout"
+				"Netflix"
+			];
 
 		debug = {
 			# disable_scale_checks = true;

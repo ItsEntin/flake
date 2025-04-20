@@ -7,28 +7,36 @@
 	];
 
 	time.timeZone = "America/Toronto";
-	services.xserver.xkb.layout = "us";
+
+	services.xserver.xkb = {
+		layout = "us";
+		options = "caps:escape";
+	};
 
 	programs.zsh.enable = true;
 	users.defaultUserShell = pkgs.zsh;
 
-	nixpkgs.config.allowUnfree = true;
-	nixpkgs.config.allowBroken = true;
+	nixpkgs.config = {
+		allowUnfree = true;
+		allowBroken = true;
+	};
 	nix.settings.experimental-features = [
 		"nix-command"
 		"flakes"
 	];
 
-	users.users.evren = {
-		isNormalUser = true;
-		extraGroups = [
-			"wheel"
-			"networkmanager"
-			"video"
-			"docker"
-			"minecraft"
-		];
-		initialPassword = "password";
+	users = {
+		users.evren = {
+			isNormalUser = true;
+			extraGroups = [
+				"wheel"
+				"networkmanager"
+				"video"
+				"docker"
+				"minecraft"
+			];
+			initialPassword = "password";
+		};
 	};
 
 	environment.shellAliases = {
@@ -48,6 +56,8 @@
 		networkmanager.enable = true;
 		firewall.enable = true;
 	};
+
+	hardware.bluetooth.enable = true;
 
 	environment.systemPackages = with pkgs; [
 		neovim
@@ -74,6 +84,7 @@
 	services = {
 		tailscale.enable = true;
 		udisks2.enable = true;
+		openssh.enable = true;
 	};
 
 }
