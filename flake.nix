@@ -36,50 +36,73 @@
 				inputs.nixvim.nixosModules.nixvim
 				inputs.agenix.nixosModules.default
 				
-				common/configuration.nix
+				./common/configuration.nix
 			];
+			mkSystem = mods: lib.nixosSystem (common // {
+				modules = modules ++ mods;
+			});
 
 		in{
 
-			thinkpad = lib.nixosSystem ( common // {
-				modules = modules ++ [
-					./hosts/thinkpad/configuration.nix
-					./themes
-				];
-			});
+			# thinkpad = lib.nixosSystem ( common // {
+			# 	modules = modules ++ [
+			# 		./hosts/thinkpad/configuration.nix
+			# 		./themes
+			# 	];
+			# });
 
-			msi = lib.nixosSystem ( common // {
-				modules = modules ++ [
-					./hosts/msi
-					./themes
-				];
-			});
+			thinkpad = mkSystem [
+				./hosts/thinkpad/configuration.nix
+				./themes
+			];
 
-			nixlab = lib.nixosSystem {
-				inherit system;
-				specialArgs = { inherit inputs; };
-				modules = [
-					inputs.catppuccin.nixosModules.catppuccin
-					inputs.agenix.nixosModules.default
+			# msi = lib.nixosSystem ( common // {
+			# 	modules = modules ++ [
+			# 		./hosts/msi
+			# 		./themes
+			# 	];
+			# });
 
-					common/configuration.nix
-					hosts/nixlab/configuration.nix
-					services/default.nix
-					secrets/default.nix
-				];
-			};
+			msi = mkSystem [
+				./hosts/msi
+				./themes
+			];
+
+			# nixlab = lib.nixosSystem ( common // {
+			# 	modules = modules ++ [
+			# 		./hosts/nixlab/configuration.nix
+			# 		./services
+			# 		./secrets
+			# 	];
+			# });
+
+			nixlab = mkSystem [
+				./hosts/nixlab/configuration.nix
+				./services
+				./secrets
+			];
 		};
 
 		homeConfigurations = {
-			nixos = home-manager.lib.homeManagerConfiguration {
+			thinkpad = home-manager.lib.homeManagerConfiguration {
 				pkgs = import nixpkgs { system = "x86_64-linux"; };
 				modules = [
 					inputs.catppuccin.homeModules.catppuccin
 					inputs.spicetify-nix.homeManagerModules.default
 					common/home.nix
-					hosts/laptop/home.nix
+					hosts/thinkpad/home.nix
 					./themes
 				];
+			msi = home-manager.lib.homeManagerConfiguration {
+				pkgs = import nixpkgs { system = "x86_64-linux"; };
+				modules = [
+					inputs.catppuccin.homeModules.catppuccin
+					inputs.spicetify-nix.homeManagerModules.default
+					common/home.nix
+					hosts/msi/home.nix
+					./themes
+				];
+			};
 			};
 			nixlab = home-manager.lib.homeManagerConfiguration {
 				pkgs = import nixpkgs { system = "x86_64-linux"; };

@@ -40,7 +40,8 @@ While redundant configuration options are not harmful, conflicting options will 
 - Hostname
 - State version
 - `boot.loader`
-- Shell alias for `sudo nixos-rebuild switch --flake /path/to/host/flake/path#config`
+- Shell alias for `sudo nixos-rebuild switch --flake /host/flake/path#config`
+- Host-specific packages without modules
 
 #### Common configuration
 
@@ -65,3 +66,8 @@ While redundant configuration options are not harmful, conflicting options will 
 
 > [!TODO] 
 > Write home-manager host vs common list
+
+#### Host configuration
+
+- App module imports
+- Shell alias for `home-manager switch --flake /host/flake/path#name`

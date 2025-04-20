@@ -29,7 +29,7 @@
 	];
 
 	home.shellAliases = {
-		hms = "home-manager switch --flake ~/flake#nixos";
+		hms = "home-manager switch --flake ~/flake#thinkpad";
 	}
 ;	
 
