@@ -105,6 +105,7 @@
 					hosts/thinkpad/home.nix
 					./themes
 				];
+			};
 			msi = home-manager.lib.homeManagerConfiguration {
 				pkgs = import nixpkgs { system = "x86_64-linux"; };
 				modules = [
@@ -114,7 +115,6 @@
 					hosts/msi/home.nix
 					./themes
 				];
-			};
 			};
 			nixlab = home-manager.lib.homeManagerConfiguration {
 				pkgs = import nixpkgs { system = "x86_64-linux"; };
