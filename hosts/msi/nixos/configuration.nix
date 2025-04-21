@@ -13,7 +13,7 @@
 	networking = {
 		interfaces.enp3s0.ipv4.addresses = [{
 			address = "10.1.1.2";
-			prefixlength = 24;
+			prefixLength = 24;
 		}];
 	};
 	
