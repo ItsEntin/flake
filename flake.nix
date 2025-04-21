@@ -41,11 +41,11 @@
 			mkSystem = mods: lib.nixosSystem (common // {
 				modules = modules ++ mods;
 			});
-			hmModule = host: (( home-manager.nixosModules.home-manager {
+			hmModule = host: ( home-manager.nixosModules.home-manager {
 				home-manager.useGlobalPkgs = true;
 				home-manager.useUserPackages = true;
 				home-manager.users.evren = ./hosts/${host}/home-manager/home.nix;
-			}));
+			});
 
 		in{
 
@@ -72,7 +72,12 @@
 				./hosts/msi
 				./themes
 
-				(hmModule "msi")
+				# (hmModule "msi")
+				home-manager.nixosModules.home-manager {
+					home-manager.useGlobalPkgs = true;
+					home-manager.useUserPackages = true;
+					home-manager.users.evren = ./hosts/msi/home-manager/home.nix;
+				}
 			];
 
 			# nixlab = lib.nixosSystem ( common // {
