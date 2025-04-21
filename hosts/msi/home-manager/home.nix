@@ -17,4 +17,8 @@
 		/swaync.nix
 	];
 
+	home.shellAliases = {
+		hms = "home-manager switch --flake /home/evren/flake#msi";
+	};
+
 }
