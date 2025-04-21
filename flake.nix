@@ -73,11 +73,11 @@
 				./themes
 
 				# (hmModule "msi")
-				home-manager.nixosModules.home-manager {
-					home-manager.useGlobalPkgs = true;
-					home-manager.useUserPackages = true;
-					home-manager.users.evren = ./hosts/msi/home-manager/home.nix;
-				}
+				# home-manager.nixosModules.home-manager {
+				# 	home-manager.useGlobalPkgs = true;
+				# 	home-manager.useUserPackages = true;
+				# 	home-manager.users.evren = ./hosts/msi/home-manager/home.nix;
+				# }
 			];
 
 			# nixlab = lib.nixosSystem ( common // {
