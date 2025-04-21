@@ -112,7 +112,7 @@
 					inputs.catppuccin.homeModules.catppuccin
 					inputs.spicetify-nix.homeManagerModules.default
 					common/home.nix
-					hosts/msi/home.nix
+					hosts/msi/home-manager/home.nix
 					./themes
 				];
 			};
