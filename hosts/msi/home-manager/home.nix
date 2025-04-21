@@ -7,7 +7,7 @@
 		/fonts.nix
 		/firefox.nix
 		/waybar.nix
-		/dicord.nix
+		/discord.nix
 		/rofi.nix
 		/syncthing.nix
 		/jetbrains.nix
