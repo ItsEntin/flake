@@ -15,6 +15,8 @@
 		/gtk.nix
 		/qt.nix
 		/swaync.nix
+	] ++ lib.lists.map (x: ./modules + x ) [
+		/hyprland.nix
 	];
 
 	home.shellAliases = {
