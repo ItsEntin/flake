@@ -26,6 +26,7 @@ programs.waybar = {
 			"cpu" 
 			"disk" 
 			"memory" 
+			"gpu"
 		];
 		modules-center = [ 
 			"hyprland/workspaces" 
