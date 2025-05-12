@@ -5,6 +5,13 @@
 	networking.hostName = "nixbox";
 	system.stateVersion = "24.11";
 
+	fileSystems = {
+		"/mnt/hdd" = {
+			device = "/dev/sda";
+			fsType = "ntfs";
+		};
+	};
+
 	boot.loader = {
 		systemd-boot.enable = true;
 		efi.canTouchEfiVariables = true;
