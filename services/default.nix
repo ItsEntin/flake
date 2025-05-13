@@ -24,6 +24,8 @@
 		./pufferpanel.nix
 		./kitchenowl.nix
 		./mealie.nix
+		./vaultwarden.nix
+		./radicale.nix
 	];
 
 }

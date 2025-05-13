@@ -17,6 +17,7 @@
 					"gotify.evren.gay" = "http://localhost:8108";
 					"dtbylg.mc.evren.gay" = "tcp://localhost:25565";
 					"recipes.evren.gay" = "http://localhost:9050";
+					"calendar.evren.gay" = "http://localhost:5232";
 				};
 			};
 		};

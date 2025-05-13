@@ -112,7 +112,7 @@ in {
 					;
 				in {
 					Type = "simple";
-					ExecStart = "${composeBin} -f ${composeFile} up ${opts.extraArgs}";
+					ExecStart = "${composeBin} -f ${composeFile} ${opts.extraArgs} up";
 					ExecStop = "${composeBin} -f ${composeFile} down";
 				};
 			};

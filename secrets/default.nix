@@ -16,6 +16,11 @@
 		radarr-api-key-env.file = ./radarr-api-key-env.age;
 		immich-api-key-env.file = ./immich-api-key-env.age;
 		jellyfin-api-key-env.file = ./jellyfin-api-key-env.age;
+		radicale-users = {
+			file = ./radicale-users.age;
+			owner = "radicale";
+		};
+		immich-db-password.file = ./immich-db-password.age;
 	};
 
 }

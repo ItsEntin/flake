@@ -16,4 +16,6 @@ in
 	"radarr-api-key-env.age".publicKeys = [ nixlab ];
 	"immich-api-key-env.age".publicKeys = [ nixlab ];
 	"jellyfin-api-key-env.age".publicKeys = [ nixlab ];
+	"radicale-users.age".publicKeys = [ nixlab ];
+	"immich-db-password.age".publicKeys = [ nixlab ];
 }
