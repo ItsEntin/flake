@@ -10,11 +10,18 @@ let
 
 			enable = mkEnableOption "the stack";
 
-			secretFile = mkOption {
-				description = "Secrets that will not be copied to the Nix Store. Should be formatted as a Systemd EnvironmentFile.";
+			envFile = mkOption {
+				description = "An environment file to be passed to Docker";
 				type = with types; nullOr path;
 				default = null;
 				example = "/run/secrets/stack-secrets.env";
+			};
+
+			extraArgs = mkOption {
+				description = "Extra arguments to be passed when starting the stack";
+				type = types.string;
+				default = "";
+				example = "-e DB_PASSWORD=password";
 			};
 
 			stack = mkOption {
@@ -105,7 +112,7 @@ in {
 					;
 				in {
 					Type = "simple";
-					ExecStart = "${composeBin} -f ${composeFile} up";
+					ExecStart = "${composeBin} -f ${composeFile} up ${opts.extraArgs}";
 					ExecStop = "${composeBin} -f ${composeFile} down";
 				};
 			};
