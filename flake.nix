@@ -18,6 +18,7 @@
 			url = "github:nix-community/nixvim";
 			inputs.nixpkgs.follows = "nixpkgs";
 		};
+		nixos-wsl.url = "github:nix-community/NixOS-WSL/main";
 	};
 
 	outputs = inputs@{ self, nixpkgs, home-manager, ... }: let
@@ -93,6 +94,18 @@
 				./services
 				./secrets
 			];
+
+			wsl = lib.nixosSystem {
+				inherit system;
+				modules = [
+					./hosts/wsl/configuration.nix
+					
+					inputs.nixos-wsl.nixosModules.default {
+						system.stateVersion = "25.05";
+						wsl.enable = true;
+					}
+				];
+			};
 		};
 
 		homeConfigurations = {
@@ -122,6 +135,14 @@
 					inputs.catppuccin.homeModules.catppuccin
 					common/home.nix
 					hosts/nixlab/home.nix
+				];
+			};
+			wsl = home-manager.lib.homeManagerConfiguration {
+				pkgs = import nixpkgs { system = "x86_64-linux"; };
+				modules = [
+					inputs.catppuccin.homeModules.catppuccin
+					inputs.nixvim.homeManagerModules.nixvim
+					common/home.nix
 				];
 			};
 		};

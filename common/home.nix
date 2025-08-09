@@ -8,7 +8,8 @@
 
 	imports = lib.lists.map (x: ./home-manager + x ) [
 		/zsh.nix
-		/nvim.nix
+		# /nvim.nix
+		/nixvim.nix
 		/lf.nix
 		/bottom.nix
 		/bat.nix
