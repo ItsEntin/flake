@@ -17,6 +17,7 @@
 		/qt.nix
 		/swaync.nix
 		/calendar.nix
+		/quickshell.nix
 		# /spotify.nix
 	] ++ lib.lists.map (x: ./home-manager + x ) [
 	# Host Modules
@@ -27,6 +28,8 @@
 		obsidian
 		jellyfin-media-player
 		vesktop
+		qbittorrent
+		protonvpn-gui
 	];
 
 	home.shellAliases = {

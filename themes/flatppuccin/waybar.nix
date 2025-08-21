@@ -4,7 +4,7 @@
 		builtins.replaceStrings ["@accent"] ["@${toString config.catppuccin.accent}"] 
 			/*css*/ ''
 				window#waybar {
-					background: @base;
+					background: @mantle;
 					color: @text;
 					font-family: 'JetBrains Mono';
 					font-size: 16px;
@@ -36,7 +36,7 @@
 
 				#workspaces button.active {
 					background: @accent;
-					color: @base;
+					color: @mantle;
 					font-size: 18px;
 					font-weight: bold;
 				}

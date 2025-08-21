@@ -8,13 +8,16 @@
 
 	imports = lib.lists.map (x: ./home-manager + x ) [
 		/zsh.nix
-		# /nvim.nix
-		/nixvim.nix
+		/nvim.nix
+		# /nixvim.nix
 		/lf.nix
 		/bottom.nix
 		/bat.nix
 		/fastfetch.nix
 		/git.nix
+		/zellij.nix
+		/zoxide.nix
+		/nushell.nix
 	];
 
 	home.packages = with pkgs; [

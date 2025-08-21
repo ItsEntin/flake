@@ -126,6 +126,7 @@ programs.waybar = {
 				headphone = "󰋋";
 				hdmi = "";
 			};
+			on-click = "${pkgs.pavucontrol}/bin/pavucontrol";
 		};
 
 		backlight = {
@@ -168,7 +169,6 @@ programs.waybar = {
 	# 	"${builtins.readFile ./src/waybar/style.css}";
 
 	style = config.theme.programs.waybar;
-	# style = 
 	# 	builtins.replaceStrings ["@accent"] ["@${toString config.catppuccin.accent}"] 
 	# 	/*css*/ ''
 	# 	window#waybar {

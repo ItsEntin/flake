@@ -2,8 +2,8 @@
 
 programs.zsh = {
 	enable = true;
-	dotDir = ".config/zsh";
-	history.path = ".config/zsh/.zsh_history";
+	dotDir = config.home.homeDirectory + "/.config/zsh";
+	history.path = config.home.homeDirectory + "/.config/zsh/.zsh_history";
 	autocd = true;
 	shellAliases = {
 		# nv = "nvim";
@@ -18,7 +18,7 @@ programs.zsh = {
 	sessionVariables = {
 		MANPAGER = "nvim +Man!";
 	};
-	initExtra = /*sh*/ ''
+	initContent = /*sh*/ ''
 		PS1='%~ > '
 		WORDCHARS=""
 		bindkey '^H' backward-kill-word

@@ -10,6 +10,7 @@
 		profiles = {
 			"Evren" = {
 				name = "Evren";
+				extensions.force = true;
 				search = {
 					default = "ddg";
 					force = true;

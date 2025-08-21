@@ -9,7 +9,7 @@
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
 
-	  ../../common/system/neovim.nix
+	  # ../../common/system/neovim.nix
     ];
 
 networking.hostName = "nixos";
@@ -40,6 +40,14 @@ fileSystems = {
 		device = "/dev/disk/by-label/NIXBOOT";
 		fsType = "vfat";
 		options = [ "fmask=0022" "dmask=0022" ];
+	};
+	"/mnt/server" = {
+		device = "//nixlab/Storage";
+		fsType = "cifs";
+		options = let 
+			automountOpts = "x-systemd.automount,noauto,x-systemd.idle-timeout=60,x-systemd.device-timeout=5s,x-systemd.mount-timeout=5s";
+		in
+			["${automountOpts},credentials=${config.age.secrets.samba-creds.path}"];
 	};
 };
 
@@ -79,7 +87,7 @@ nix.settings.experimental-features = [
 
 environment.systemPackages = with pkgs; [
 	vim
-	neovim
+	# neovim
 	kitty
 	networkmanager
 	neofetch
@@ -97,6 +105,7 @@ environment.systemPackages = with pkgs; [
 	direnv
 	rustup
 	cargo
+	cifs-utils # for samba mounting
 ];
 
 fonts.packages = with pkgs; [

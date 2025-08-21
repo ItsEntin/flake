@@ -21,6 +21,7 @@
 			owner = "radicale";
 		};
 		immich-db-password.file = ./immich-db-password.age;
+		samba-creds.file = ./samba-creds.age;
 	};
 
 }

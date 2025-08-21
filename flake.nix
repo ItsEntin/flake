@@ -60,6 +60,7 @@
 			thinkpad = mkSystem [
 				./hosts/thinkpad/configuration.nix
 				./themes
+				./secrets
 			];
 
 			# msi = lib.nixosSystem ( common // {
@@ -68,18 +69,6 @@
 			# 		./themes
 			# 	];
 			# });
-
-			msi = mkSystem [
-				./hosts/msi
-				./themes
-
-				# (hmModule "msi")
-				# home-manager.nixosModules.home-manager {
-				# 	home-manager.useGlobalPkgs = true;
-				# 	home-manager.useUserPackages = true;
-				# 	home-manager.users.evren = ./hosts/msi/home-manager/home.nix;
-				# }
-			];
 
 			# nixlab = lib.nixosSystem ( common // {
 			# 	modules = modules ++ [
@@ -114,9 +103,11 @@
 				modules = [
 					inputs.catppuccin.homeModules.catppuccin
 					inputs.spicetify-nix.homeManagerModules.default
+					inputs.nixvim.homeManagerModules.nixvim
 					common/home.nix
 					hosts/thinkpad/home.nix
 					./themes
+					common/home-manager/nvim.nix
 				];
 			};
 			msi = home-manager.lib.homeManagerConfiguration {

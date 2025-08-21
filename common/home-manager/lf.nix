@@ -42,7 +42,7 @@ programs.lf = {
 		"<tab>" = "set number!"; # Toggle numberline
 
 		gh = "cd ~"; # Go home
-		gc = "cd ~/.config/home-manager"; # Go to HM config
+		gf = "cd ~/flake"; # Go to flake
 
 		S = "$$SHELL"; # Open shell
 		s = "push :shell<enter>"; # Inline shell

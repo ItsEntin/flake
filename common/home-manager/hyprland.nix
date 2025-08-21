@@ -12,13 +12,17 @@ wayland.windowManager.hyprland = {
 			"${pkgs.swww}/bin/swww-daemon"
 			"${pkgs.blueman}/bin/blueman-applet"
 		];
-		general = {
+		general = rec {
 			gaps_in = 4;
-			gaps_out = 8;
+			gaps_out = 12;
 
 			border_size = 2;
 			"col.active_border" = "$accent";
 			"col.inactive_border" = "rgba(ffffff00)";
+			
+			snap = {
+				enabled = true;
+			};
 		};
 
 		misc = {
@@ -26,9 +30,15 @@ wayland.windowManager.hyprland = {
 		};
 
 		decoration = {
+			rounding = 12;
 			shadow = {
 				color = "$crust";
 				color_inactive = "rgba(1e1e2e00)";
+			};
+			blur = {
+				enabled = true;
+				size = 6;
+				passes = 2;
 			};
 			dim_inactive = true;
 			dim_strength = 0.2;
@@ -139,6 +149,7 @@ wayland.windowManager.hyprland = {
 			] ++ lib.lists.map (class: "float, class:(.*${class}.*)") [
 				"nm-connection-editor"
 				"blueman"
+				"pavucontrol"
 			# Always full brightness:
 			] ++ lib.lists.map (title: "nodim, title:(.*${title}).*") [
 				"YouTube"

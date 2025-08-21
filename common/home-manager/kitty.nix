@@ -16,6 +16,7 @@ programs.kitty = let
 		cursor_blink_interval = 0;
 		cursor_underline_thickness = 1.8;
 		cursor = c.text.hex;
+		background_opacity = 0.85;
 		# modify_font = ''
 		# 	underline_thickness 150%
 		# 	modify_font underline_position 1

@@ -1,291 +1,627 @@
-{ config, pkgs, lib, ... }: {
+{ config, lib, pkgs, ... }: 
 
-programs.neovim = 
-let
-	toLua = str: "lua << EOF\n${str}\nEOF\n";
+let 
+	
+	cat = (lib.importJSON "${config.catppuccin.sources.palette}/palette.json")
+		.${config.catppuccin.flavor} # mocha
+		.colors;
 
-	c = (lib.importJSON "${config.catppuccin.sources.palette}/palette.json")
-		.${config.catppuccin.flavor}.colors;
-	accent = c.${config.catppuccin.accent};
-in
-{
+	accent = cat.${config.catppuccin.accent};
+
+in {
+
+programs.nixvim = {
 	enable = true;
-	defaultEditor = true;
+	opts = {
+		number = true; # number line
+		relativenumber = true; # relative line numbers
+		scrolloff = 8; # space left at top/bottom when scrolling
+		cursorline = true; # highlight active line
+		wrap = false;  #wrap lines at edge
+		cmdheight = 0; # hide command line unless needed
+		clipboard = "unnamedplus"; # use system clipboard 
+		signcolumn = "no"; # hide diagnostic signs in gutter
+		colorcolumn = "100";
+		mousemoveevent = true;
 
-	vimAlias = true;
-	viAlias = true;
+		tabstop = 4; # tab width
+		softtabstop = 4; # tab width
+		shiftwidth = 4; # tab width
+		smartindent = false;
 
-	# Neovim Options
-	extraLuaConfig = lib.strings.concatMapStrings (x: "\n" + x)
-		(lib.attrsets.mapAttrsToList (key: value: "vim.opt." + key + "=" + 
-		(if (value == true) then "true" else if (value == false) then "false" else toString value)
-		) {
-			number = true; # Line numbers
-			relativenumber = true; # Relative line numbers
-			ignorecase = true; # Case insensitive search
-			smartcase = true; # Case sensitive search when capitals used
-			scrolloff = 8; # Space left at top/bottom while scrolling
-			tabstop = 4; # Tab width
-			shiftwidth = 4; # Tab width
-			wrap = false; # Wrap lines
-			cursorline = true;
-		});
+		splitbelow = true; # open hsplits below current
+		splitright = true; # open vsplits to right of current
 
-	# Keybinds
-	extraConfig = /*vim*/ ''
-		nmap J 10j 
-		nmap K 10k
+		foldmethod = "expr"; # fold based on ts expr
+		foldexpr = "v:lua.vim.treesitter.foldexpr()";
+		foldlevelstart = 99; # open all folds by default
 
-		nmap [b :BufferLineCyclePrev<CR>
-		nmap ]b :BufferLineCycleNext<CR>
-		nmap T :badd<space>
-		nmap Q :bd<CR>
+		pumheight = 15;
+	};
+	globals = {
+		mapleader = " ";
+	};
+	highlightOverride = {
+		ColorColumn.link = "LineNr";
+	};
+	colorschemes.catppuccin = {
+		enable = true;
+		settings = {
+			integrations = {
+				neotree = true;
+				treesitter = true;
+				cmp = true;
+			};
+			color_overrides.mocha = {
+				base = "#1e1e2e";
+			};
+			custom_highlights = {
+				Folded = { bg = "#313244"; };
 
-		nmap F :Neotree<CR>
+				NeoTreeWinSeparator = { bg = "#181825"; fg = "#181825"; };
+				NeoTreeDirectoryIcon = { fg = accent.hex; };
+				NeoTreeDirectoryName = { fg = accent.hex; };
+				NeoTreeIndentMarker.fg = cat.surface0.hex;
+				NeoTreeRootName.fg = accent.hex;
+				NeoTreeTabActive.fg = accent.hex;
 
-		imap <C-BS> <C-W>
-	'';
+				lualine_a_normal = { bg = accent.hex; };
+				lualine_b_normal = { fg = accent.hex; };
 
-	extraPackages = with pkgs; [
-		nixd
-		lua-language-server
-		rust-analyzer
+				MiniMapNormal.bg = cat.base.hex;
+				MiniMapSymbolLine.fg = accent.hex;
+			};
+		};
+	};
+	autoCmd = [
+		{ # save folds on exit
+			event = "BufWinLeave";
+			command = "mkview";
+			pattern = "*.*";
+		}
+		{ # load folds on enter
+			event = "BufWinEnter";
+			command = "silent! loadview";
+			pattern = "*.*";
+		}
+
+		{ # hide cursor in nvimtree
+			event = ["WinEnter" "BufWinEnter"];
+			pattern = "Neotree*";
+			command = "set guicursor+=a:Cursor/lCursor | silent! hi Cursor blend=100";
+		}
+		{ # show cursor when leaving nvimtree
+			event = ["WinLeave" "BufWinLeave"];
+			pattern = "Neotree*";
+			command = "silent! hi Cursor blend=0";
+		}
+
+		{ # on vim open
+			event = "VimEnter";
+			callback.__raw = /*lua*/ ''
+				function() 
+					local map = require("mini.map")
+					-- set up cursor for neotree
+                    vim.cmd("set guicursor+=a:Cursor/lCursor")
+					-- open tree and minimap if w>110
+					if vim.o.columns > 110 then
+						require("neo-tree.command").execute({action = "show"})
+						map.open()
+					else
+						map.open({ window = { width = 1} })
+					end
+				end
+			'';
+		}
+		{ # open/close nvimtree on resize
+			event = "VimResized";
+			callback.__raw = ''
+            function()
+					local tree = require("neo-tree.command")
+					local map = require("mini.map")
+					if vim.o.columns < 110 then
+						tree.execute({action = "close"})
+						map.refresh({ window = { width = 1 } })
+					elseif vim.o.columns >= 110 then
+						tree.execute({action = "show"})
+						map.refresh({ window = { width = 10 } })
+					end
+				end
+			'';
+		}
 	];
+	keymaps = [
+		{ # down 10 lines
+			key = "J";
+			action = "10j";
+			mode = "n";
+		}
+		{ # up 10 lines 
+			key = "K";
+			action = "10k";
+			mode = "n";
+		}
 
-	plugins = 
-		lib.attrsets.mapAttrsToList (key: value: 
-			{
-				plugin = pkgs.vimPlugins.${toString key}; 
-				config = "${toLua value}";
-			}
-		) 
-	{
-		nvim-lspconfig = /*lua*/ ''
-			local lsp = require("lspconfig")
-			lsp.nixd.setup ({
-				settings = {
-					nixd = {
+		{ # ctrl + backspace
+			key = "<C-BS>";
+			action = "<C-W>";
+			mode = "i";
+		}
+
+		{ # select pane to left
+			key = "<C-h>";
+			action = ":wincmd h<CR>";
+			mode = "n";
+			options.silent = true;
+		}
+		{ # select pane above 
+			key = "<C-j>";
+			action = ":wincmd j<CR>";
+			mode = "n";
+			options.silent = true;
+		}
+		{ # select pane below
+			key = "<C-k>";
+			action = ":wincmd k<CR>";
+			mode = "n";
+			options.silent = true;
+		}
+		{ # select pane to right
+			key = "<C-l>";
+			action = ":wincmd l<CR>";
+			mode = "n";
+			options.silent = true;
+		}
+
+		{ # increase hsplit size
+			key = "<C-Up>";
+			action = ":resize +10<CR>";
+			mode = "n";
+		}
+		{ # decrease hsplit size
+			key = "<C-Down>";
+			action = ":resize -10<CR>";
+			mode = "n";
+		}
+		{ # increase vsplit size
+			key = "<C-Right>";
+			action = ":vertical resize +10<CR>";
+			mode = "n";
+		}
+		{ # decrease vsplit size
+			key = "<C-Left>";
+			action = ":vertical resize -10<CR>";
+			mode = "n";
+		}
+
+		{ # next buffer
+			key = "<Tab>";
+			action = ":BufferLineCycleNext<CR>";
+			mode = "n";
+			options = {
+				desc = "Next buffer";
+				silent = true;
+			};
+		}
+		{ # prev buffer
+			key = "<S-Tab>";
+			action = ":BufferLineCyclePrev<CR>";
+			mode = "n";
+			options = {
+				desc = "Previous buffer";
+				silent = true;
+			};
+		}
+
+		{ # toggle neotree
+			key = "<leader>f";
+			action = ":Neotree toggle<CR>";
+			mode = "n";
+			options = {
+				desc = "Toggle file browser";
+				silent = true;
+			};
+		}
+	];
+	diagnostic.settings = {
+		virtual_text = {
+			prefix = "●";
+			spacing = 1;
+		};
+		signs = {
+			text.__raw = /*lua*/ '' {
+				[vim.diagnostic.severity.ERROR] = '',
+				[vim.diagnostic.severity.WARN] = '',
+				[vim.diagnostic.severity.INFO] = '',
+				[vim.diagnostic.severity.HINT] = '󰌶',
+			}'';
+		};
+		underline = true;
+		update_in_insert = false;
+	};
+	files = {
+		"ftplugin/markdown.lua" = {
+			opts = {
+				wrap = true;
+				linebreak = true;
+				spell = true;
+				spelllang = "en_ca";
+			};
+		};
+	};
+	plugins = {
+
+		lsp = {
+			enable = true;
+			servers = {
+				nixd = {
+					enable = true;
+					settings = {
 						options = {
-							home_manager = {
-								expr = "(import <home-manager/modules> { configuration = ~/.config/home-manager/home.nix; pkgs = import <nixpkgs> {}; }).options",
-							},
-							nixos = {
-								expr = '(builtins.getFlake ("git+file://" + toString ./.)).nixosConfigurations.k-on.options',
-							}
-						},
-					},
-				},
-			})
-			lsp.lua_ls.setup {}
-			-- for _, diag in ipairs({ "Error", "Warn", "Info", "Hint" }) do
-			-- 	vim.fn.sign_define("DiagnosticSign" .. diag, {
-			-- 		text = "",
-			-- 		texthl = "DiagnosticSign" .. diag,
-			-- 		linehl = "",
-			-- 		numhl = "DiagnosticSign" .. diag,
-			-- 	})
-			-- end
-		'';
-		trouble-nvim = /*lua*/ ''
-			require("trouble").setup{}
-		'';
-		which-key-nvim = "";
-		render-markdown-nvim = /*lua*/ ''
-			require("render-markdown").setup({
-				heading = {
-					sign = false,
-					icons = {},
-				},
-			});
-		'';
-		todo-comments-nvim = "";
-		oil-nvim = /*lua*/ ''
-			require"oil".setup {}
-		'';
-		bufferline-nvim = /*lua*/ ''
-			vim.o.mousemoveevent = true
-			require('bufferline').setup ({
-				options = {
-					always_show_bufferline = false,
-					close_command = "bd %d",
-					right_mouse_command = "bd %d",
-					indicator = {style = "none"},
-					modified_icon = "",
-					close_icon = "",
-					color_icons = false,
-					diagnostics = "nvim_lsp",
-					separator_style = {"",""},
-					offsets = {
-						{
-							filetype = "neo-tree",
-							text = "File Browser",
-							text_align = "left",
-							separator = true,
-						},
-					},
-				},
-				highlights = ${  
-					let 
-						accentBG = ''bg = "${accent.hex}", fg = "${c.mantle.hex}",'';
-					in
-					/*lua*/ '' {
-						buffer_selected = {
-							${accentBG}
-							bold = true,
-							italic = true,
-						},
-						modified_selected = {${accentBG}},
-						close_button_selected = {${accentBG} },
-						warning_selected = {${accentBG}},
-						hint_selected = {${accentBG}},
-					},''
-				}
-			})
-		'';
-		comment-nvim = /*lua*/ ''
-			require('Comment').setup()
-		'';
-		nvim-scrollbar = /*lua*/ ''
-			require("scrollbar").setup{
-				handle = {
-					color = "${c.surface1.hex}",
-					blend = 0;
-				},
-				marks = {
-				},
-				handlers = {
-					cursor = false;
-				}
-			}
-		'';
-		indent-blankline-nvim = /*lua*/ ''
-			require("ibl").setup()
-		'';
-		nvim-autopairs /*lua*/ = ''
-			require("nvim-autopairs").setup()
-		'';
-		luasnip = /*lua*/ ''
-			require("luasnip.loaders.from_vscode").lazy_load()
-			require("luasnip").config.setup {}
-		'';
-		cmp_luasnip = "";
-		cmp-nvim-lsp = "";
-		cmp-buffer = "";
-		cmp-path = "";
-		friendly-snippets = "";
-		nvim-cmp = /*lua*/ ''
-				local cmp = require"cmp"
-				cmp.setup ({
-					snippet = {
-						expand = function(args)
-							require('luasnip').lsp_expand(args.body)
-							vim.snippet.expand(args.body)
-						end,
-					},
-					sources = {
-						{ name = 'nvim_lsp' },
-						{ name = 'luasnip' },
-						-- { name = 'buffer' },
-						{ name = 'path' },
-						{ name = 'render-markdown' },
-					},
-					mapping = {
-						["<Tab>"] = cmp.mapping(function(fallback)
-							  -- This little snippet will confirm with tab, and if no entry is selected, will confirm the first item
-							  if cmp.visible() then
+							nixos.expr = /*nix*/ ''
+								(builtins.getFlake ("git+file://" + toString ./../..))
+								.nixosConfigurations.thinkpad.options
+							'';
+							home-manager.expr = /*nix*/ ''
+								(builtins.getFlake ("git+file://" + toString ./../..))
+								.homeConfigurations.thinkpad.options
+							'';
+						};
+						diagnostic.suppress = [
+							"sema-unused-def-lambda-noarg-formal"
+						];
+					};
+				};
+				lua_ls.enable = true; # lua
+				yamlls.enable = true; # yaml
+				jsonls.enable = true; # json
+				qmlls.enable = true; # qml
+				html.enable = true; # html
+				phpactor.enable = true; # php
+				clangd.enable = true; # c
+				marksman.enable = true; # markdown
+			};
+		};
+
+		schemastore.enable = true;
+
+		# nix.enable = true;
+
+		treesitter = {
+			enable = true;
+			settings = {
+				highlight.enable = true;
+			};
+		};
+
+		cmp = {
+			enable = true;
+			settings = {
+				sources = [
+					{name = "nvim_lsp";}
+					{name = "luasnip";}
+					{name = "path";}
+					{name = "calc";}
+				];
+				view = {
+					entries = {
+						name = "custom";
+						selection_order = "near_cursor";
+					};
+				};
+				formatting = {
+					fields = [
+						"kind"
+						"abbr"
+						"menu"
+					];
+					# format = /*lua*/ ''
+					# 	require('lspkind').cmp_format({
+					# 		mode = "symbol",
+					# 	})
+					# '';
+				};
+				snippet.expand = /*lua*/ "function(args) require('luasnip').lsp_expand(args.body) end";
+				mapping = { 
+					"<Tab>" = /*lua*/ ''
+						cmp.mapping(function(fallback)
+							if cmp.visible() then
 								local entry = cmp.get_selected_entry()
 								if not entry then
-								  cmp.select_next_item({ behavior = cmp.SelectBehavior.Select })
+									cmp.select_next_item({ behavior = cmp.SelectBehavior.Select })
 								end
 								cmp.confirm()
-							  else
-							fallback()
-						  end
-					end, {"i","s",}),
-				}
-			})
-		'';
-		nvim-web-devicons = "";
-		neo-tree-nvim = /*lua*/ ''
-			require"neo-tree".setup({
-				
-			})
-		'';
-		rustaceanvim = "";
-		lualine-nvim = 
-			let
-				setColor = default: fallback: if (c.${default}.hex == accent.hex) then c.${fallback}.hex else c.${default}.hex;
-			in
-			/*lua*/ ''
-			local function modified()
-				if vim.bo.modified then
-					return ''
-				elseif vim.bo.modifiable == false or vim.bo.readonly == true then
-					return ''
-				end
-				return ''
-			end
-
-			local catppuccin = ${
-				let 
-					mode = mode: color: /*lua*/ ''
-						${mode} = {
-							a = { fg = "${c.mantle.hex}", bg = "${color}", gui = "bold"},
-							b = { fg = "${color}", bg = "${c.surface0.hex}" },
-							c = { fg = "${c.text.hex}", bg = "${c.mantle.hex}" },
-							y = { fg = "${color}", bg = "${c.surface0.hex}" },
-							z = { fg = "${c.mantle.hex}", bg = "${color}", gui = "bold"},
-						},
+							else
+								fallback()
+							end
+						end, {"i","s","c",}),
 					'';
-				in /*lua*/ ''
-					{
-						${mode "normal" accent.hex}
-						${mode "insert" (setColor "sapphire" "teal")}
-						${mode "command" (setColor "mauve" "sky")}
-						${mode "visual" (setColor "red" "pink")}
-					}
-				''
-			}
+				};
+				window = {
+					completion = {
+						side_padding = 2;
+					};
+				};
+			};
+			cmdline = {
+				":" = {
+					sources = [
+						{name = "cmdline";}
+					];
+				};
+				"?" = {
+					sources = [
+						{name = "buffer";}
+					];
+				};
+			};
+		};
 
-			require('lualine').setup {
+		lspkind = {
+			enable = true;
+			cmp.enable = true;
+			settings = {
+				mode = "symbol";
+			};
+		};
 
-				sections = {
-					lualine_a = {'mode'},
-					lualine_b = {{modified}},
-					lualine_c = {{
-						'filename',
-						path = 1,
-						file_status = false,
-						symbols = {unnamed = 'New File'}
-					}},
-					lualine_x = {'filetype'},
-					lualine_y = {'progress'},
-					lualine_z = {'location'}
-				},
+		friendly-snippets.enable = true;
+
+		luasnip = {
+			enable = true;
+		};
+
+		trouble.enable = true;
+
+		lint = {
+			enable = true;
+		};
+
+		lualine = {
+			enable = true;
+			settings = {
 				options = {
-					section_separators = "", component_separators = "",
-					icons_enabled = true,
-					theme = catppuccin,
-				},
-				extensions = { "man", "neo-tree" }
-
-			}
-		'';
-		} ++ [
-			{
-				plugin = pkgs.vimPlugins.nvim-treesitter.withAllGrammars;
-				config = toLua /*lua*/ ''
-					require("nvim-treesitter.configs").setup {
-						highlight = {
-							enable = true
+					icons_enabled = true;
+					component_separators = { left = ""; right = ""; };
+					section_separators = { left = ""; right = ""; };
+				};
+				disabled_filetypes = [
+					"neo-tree"
+				];
+				extensions = [
+					"trouble"
+					"nvim-tree"
+					# "neo-tree"
+				];
+				sections = {
+					lualine_a = ["mode"];
+					lualine_b = [{
+						__unkeyed-1.__raw = /*lua*/ ''
+							function()
+								if (vim.bo.modified) then
+									return '󰏫'
+								elseif (vim.bo.modifiable == false) or (vim.bo.readonly == true) then
+									return ''
+								else 
+									return ''
+								end
+							end
+						'';
+					}];
+					lualine_c = [
+						{
+							__unkeyed-1 = "filename";
+							path = 1;
+							# file_status = false;
+							symbols = {
+								unnamed = "New File";
+								modified = "";
+								readonly = "";
+							};
 						}
-					}
-				'';
-			}
-		];
+					];
+					lualine_x = ["filetype"];
+					lualine_y = ["branch" "diagnostics"];
+					lualine_z = ["location"];
+				};
+			};
+		};
 
+		web-devicons.enable = true;
+
+		autoclose.enable = true;
+
+		indent-blankline = {
+			enable = true;
+			settings = {
+				scope.enabled = false;
+			};
+		};
+
+		scrollview = {
+			# enable = true;
+			settings = {
+				excluded_filetypes = ["NvimTree"];
+			};
+		};
+
+		comment.enable = true;
+
+		# intellitab.enable = true;
+		# smear-cursor.enable = true;
+
+		origami = {
+			enable = true;
+			settings = {
+				foldKeymaps = {
+					setup = false;
+				};
+			};
+		};
+
+		which-key = {
+			enable = true;
+
+		};
+		transparent = {
+			enable = true;
+			settings = {
+				extra_groups = [
+					"MiniMapNormal"
+				];
+				exclude_groups = [
+					"CursorLine"
+				];
+			};
+		};
+
+		bufferline = {
+			enable = true;
+			settings = {
+				options = {
+					right_mouse_command = null;
+					middle_mouse_command = "bdelete! %d";
+					modified_icon = "󰏫";
+					separator_style = "thick";
+					always_show_bufferline = true;
+					indicator.icon = "▌";
+					offsets = [
+						{
+							filetype = "neo-tree";
+							# text = " Neovim";
+							text_align = "left";
+							separator = "";
+							padding = 1;
+							highlight = "NeoTreeTabInactive";
+						}
+					];
+					hover = {
+						enabled = true;
+						delay = 0;
+						reveal = ["close"];
+					};
+				};
+				highlights = {
+					fill.bg = cat.mantle.hex;
+					indicator_selected.fg = accent.hex;
+					separator.bg = cat.mantle.hex;
+					buffer_selected = {
+						gui = "bold";
+						bg = cat.base.hex;
+					};
+				};
+			};
+		};
+
+		neo-tree = {
+			enable = true;
+			closeIfLastWindow = true;
+			addBlankLineAtTop = true;
+			sources = [
+				"filesystem"
+				"buffers"
+				"document_symbols"
+			];
+			window = {
+				width = 30;
+				mappings = {
+					l = "open";
+					h = "close_node";
+				};
+			};
+			defaultComponentConfigs = {
+				icon.default = "󰈔";
+				modified.symbol = "󰏫";
+			};
+			eventHandlers = {
+				neo_tree_buffer_enter = "function() vim.cmd 'highlight! Cursor blend=100' end";
+				neo_tree_buffer_leave = "function() vim.cmd 'highlight! Cursor blend=0' end";
+			};
+            sourceSelector = {
+				winbar = true;
+				contentLayout = "center";
+				sources = [
+					{
+						source = "filesystem";
+						displayName = "󰉓 File";
+					}
+					{
+						source = "buffers";
+						displayName = "󰈚 Buffer";
+					}
+					{
+						source = "document_symbols";
+						displayName = "󰆧 Symbol";
+					}
+				];
+            };
+			filesystem = {
+				followCurrentFile.enabled = true;
+			};
+		};
+
+		markview = {
+			enable = true;
+			settings = {
+				markdown = {
+					headings.__raw = "require('markview.presets').headings.marker";
+					list_items = {
+						shift_width = 2;
+						marker_minus = {
+							text = "•";
+							hl = "Normal";
+						};
+					};
+				};
+				markdown_inline = {
+					checkboxes = {
+						unchecked.text = "☐";
+						checked.text = "☑";
+					};
+				};
+			};
+		};
+
+		telescope = {
+			enable = true;
+		};
+
+		virt-column = {
+			enable = true;
+			settings = {
+				char = "│";
+				highlight = "IblIndent";
+			};
+		};
+
+		mini = {
+			enable = true;
+			modules = {
+				map = {
+					integrations = null;
+					window = {
+						width = 10;
+						winblend = 0;
+					};
+					symbols = {
+						encode.__raw = "require('mini.map').gen_encode_symbols.dot('4x2')";
+					};
+				};
+			};
+		};
+
+		colorizer = {
+			enable = true;
+			settings = {
+				user_default_options = {
+					mode = "virtualtext";
+					virtualtext = "󱓻";
+					virtualtext_inline.__raw = "'before'";
+				};
+			};
+		};
+	};
 };
 
-catppuccin.nvim.enable = true;
-
 }
+
