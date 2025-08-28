@@ -1,4 +1,10 @@
-{ config, pkgs, lib, ... }: {
+{ config, pkgs, lib, ... }: let
+
+	cat = (lib.importJSON "${config.catppuccin.sources.palette}/palette.json")
+		.${config.catppuccin.flavor} # mocha
+		.colors;
+
+in {
 
 	programs.firefox = {
 		enable = true;
@@ -62,6 +68,40 @@
 					browser.sessionstore.resume_from_crash = false;
 					browser.fullscreen.autohide = false;
 				};
+				userChrome = /*css*/ ''
+					/* transparent searchbar */
+					#urlbar:not([focused]) > #urlbar-background {
+						background: none !important;
+						border: none !important;
+					}
+					/* tabs */
+					.tabbrowser-tab {
+						padding: 0 !important;
+					}
+					.tab-background {
+						outline: none !important;
+						border-radius: 9rem !important;
+						padding: .2rem !important;
+					}
+					.tab-content {
+						padding: !important;
+						color: ${cat.text.hex} !important;
+					}
+					.tab-stack > * {
+						padding: 8px 22px !important;;
+					}
+					.tab-close-button {
+						border-radius: 9rem !important;
+					}
+				'';
+				userContent = /*css*/ ''
+					/* rounded new tab searchbar */
+					.search-handoff-button {
+						background-color: ${cat.base.hex} !important;
+						border-radius: 99em !important;
+						padding: 1.3rem 4rem !important;
+					}
+				'';
 			};
 		};
 		policies.ExtensionSettings =

@@ -2,33 +2,34 @@
 
 programs.zsh = {
 	enable = true;
+	autocd = true;
+	enableCompletion = true;
+
 	dotDir = config.home.homeDirectory + "/.config/zsh";
 	history.path = config.home.homeDirectory + "/.config/zsh/.zsh_history";
-	autocd = true;
-	shellAliases = {
-		# nv = "nvim";
-		# nrs = "sudo nixos-rebuild switch";
-		# hms = "home-manager switch";
-		# nsp = "nix-shell -p";
-		# cl = "clear";
-		# fuck = "sudo $(fc -ln -1)";
-		# q = "exit";
-		# ll = "ls -lah";
-	};
+
 	sessionVariables = {
 		MANPAGER = "nvim +Man!";
 	};
+
 	initContent = /*sh*/ ''
 		PS1='%~ > '
 		WORDCHARS=""
 		bindkey '^H' backward-kill-word
 		eval "$(direnv hook zsh)"
 	'';
+
 	completionInit = /*sh*/ ''
 		zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}'
 		zstyle ':completion:*' menu select
 	'';
+
+	autosuggestion = {
+		enable = true;
+	};
+
 	zprof.enable = false;
+
 	syntaxHighlighting = {
 		enable = true;
 		highlighters = [

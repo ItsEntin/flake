@@ -103,7 +103,7 @@
 				modules = [
 					inputs.catppuccin.homeModules.catppuccin
 					inputs.spicetify-nix.homeManagerModules.default
-					inputs.nixvim.homeManagerModules.nixvim
+					inputs.nixvim.homeModules.nixvim
 					common/home.nix
 					hosts/thinkpad/home.nix
 					./themes

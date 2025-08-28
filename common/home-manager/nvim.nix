@@ -55,7 +55,7 @@ programs.nixvim = {
 			color_overrides.mocha = {
 				base = "#1e1e2e";
 			};
-			custom_highlights = {
+			custom_highlights = rec {
 				Folded = { bg = "#313244"; };
 
 				NeoTreeWinSeparator = { bg = "#181825"; fg = "#181825"; };
@@ -67,9 +67,22 @@ programs.nixvim = {
 
 				lualine_a_normal = { bg = accent.hex; };
 				lualine_b_normal = { fg = accent.hex; };
+				lualine_transparent.bg = cat.mantle.hex;
 
 				MiniMapNormal.bg = cat.base.hex;
 				MiniMapSymbolLine.fg = accent.hex;
+
+				TelescopePromptNormal.bg = cat.surface0.hex;
+				TelescopePromptTitle.fg = accent.hex;
+				TelescopeResultsNormal.bg = cat.crust.hex;
+				TelescopePreviewNormal.bg = cat.mantle.hex;
+
+				TelescopePromptBorder.bg = TelescopePromptNormal.bg;
+				TelescopePromptTitle.bg = TelescopePromptNormal.bg;
+				TelescopeResultsBorder.bg = TelescopeResultsNormal.bg;
+				TelescopeResultsTitle.fg = TelescopeResultsNormal.bg;
+				TelescopePreviewBorder.bg = TelescopePreviewNormal.bg;
+				TelescopePreviewTitle.fg = TelescopePreviewNormal.bg;
 			};
 		};
 	};
@@ -222,6 +235,15 @@ programs.nixvim = {
 				silent = true;
 			};
 		}
+		{ # toggle terminal
+			key = "<leader>t";
+			action = ":ToggleTerm dir=%:p:h<CR>";
+			mode = "n";
+			options = {
+				desc = "Toggle terminal";
+				silent = true;
+			};
+		}
 	];
 	diagnostic.settings = {
 		virtual_text = {
@@ -298,10 +320,11 @@ programs.nixvim = {
 			enable = true;
 			settings = {
 				sources = [
+					{name = "calc";}
 					{name = "nvim_lsp";}
 					{name = "luasnip";}
+					{name = "buffer";}
 					{name = "path";}
-					{name = "calc";}
 				];
 				view = {
 					entries = {
@@ -365,10 +388,13 @@ programs.nixvim = {
 			};
 		};
 
-		friendly-snippets.enable = true;
+		friendly-snippets = {
+			enable = true;
+		};
 
 		luasnip = {
 			enable = true;
+			lazyLoad.settings.event = "InsertEnter";
 		};
 
 		trouble.enable = true;
@@ -384,14 +410,16 @@ programs.nixvim = {
 					icons_enabled = true;
 					component_separators = { left = ""; right = ""; };
 					section_separators = { left = ""; right = ""; };
+					disabled_filetypes = [
+						"neo-tree"
+						"toggleterm"
+						"alpha"
+					];
 				};
-				disabled_filetypes = [
-					"neo-tree"
-				];
 				extensions = [
 					"trouble"
 					"nvim-tree"
-					# "neo-tree"
+					"neo-tree"
 				];
 				sections = {
 					lualine_a = ["mode"];
@@ -464,7 +492,7 @@ programs.nixvim = {
 
 		};
 		transparent = {
-			enable = true;
+			# enable = true;
 			settings = {
 				extra_groups = [
 					"MiniMapNormal"
@@ -489,10 +517,11 @@ programs.nixvim = {
 						{
 							filetype = "neo-tree";
 							# text = " Neovim";
+							# text = "Files";
 							text_align = "left";
 							separator = "";
 							padding = 1;
-							highlight = "NeoTreeTabInactive";
+							# highlight = "NeoTreeTabInactive";
 						}
 					];
 					hover = {
@@ -516,7 +545,7 @@ programs.nixvim = {
 		neo-tree = {
 			enable = true;
 			closeIfLastWindow = true;
-			addBlankLineAtTop = true;
+			# addBlankLineAtTop = true;
 			sources = [
 				"filesystem"
 				"buffers"
@@ -538,7 +567,7 @@ programs.nixvim = {
 				neo_tree_buffer_leave = "function() vim.cmd 'highlight! Cursor blend=0' end";
 			};
             sourceSelector = {
-				winbar = true;
+				# winbar = true;
 				contentLayout = "center";
 				sources = [
 					{
@@ -562,6 +591,7 @@ programs.nixvim = {
 
 		markview = {
 			enable = true;
+			lazyLoad.settings.ft = "markdown";
 			settings = {
 				markdown = {
 					headings.__raw = "require('markview.presets').headings.marker";
@@ -584,6 +614,14 @@ programs.nixvim = {
 
 		telescope = {
 			enable = true;
+			lazyLoad.settings.cmd = "Telescope";
+			settings = {
+				defaults = {
+					prompt_prefix = "  ";
+					# selection_caret = "";
+					borderchars = lib.lists.replicate 8 " ";
+				};
+			};
 		};
 
 		virt-column = {
@@ -614,12 +652,143 @@ programs.nixvim = {
 			enable = true;
 			settings = {
 				user_default_options = {
+					filetypes = [
+						"*"
+						"!markdown"
+					];
 					mode = "virtualtext";
 					virtualtext = "󱓻";
 					virtualtext_inline.__raw = "'before'";
 				};
 			};
 		};
+
+		toggleterm = {
+			enable = true;
+			lazyLoad.settings.cmd = "ToggleTerm";
+			settings = {
+				# direction = "float";
+				direction = "horizontal";
+				float_opts = {
+					# border = "shadow";
+				};
+			};
+		};
+
+		project-nvim = {
+			enable = true;
+			enableTelescope = true;
+			settings = {
+				patterns = [
+					".git"
+					".idea"
+					">~/Code"
+					"flake.nix"
+					"package.json"
+					"Makefile"
+					"shell.qml"
+				];
+			};
+		};
+
+		alpha = {
+			enable = true;
+			layout = let
+				pad = x: { type = "padding"; val = x; };
+				space = pad 2;
+			in [
+				{ # logo
+					type = "text";
+					opts = {
+						position = "center";
+					};
+					val = [
+						"                               __                "
+						"  ___     ___    ___   __  __ /\\_\\    ___ ___    "
+						" / _ `\\  / __`\\ / __`\\/\\ \\/\\ \\\\/\\ \\  / __` __`\\  "
+						"/\\ \\/\\ \\/\\  __//\\ \\_\\ \\ \\ \\_/ |\\ \\ \\/\\ \\/\\ \\/\\ \\ "
+						"\\ \\_\\ \\_\\ \\____\\ \\____/\\ \\___/  \\ \\_\\ \\_\\ \\_\\ \\_\\"
+						" \\/_/\\/_/\\/____/\\/___/  \\/__/    \\/_/\\/_/\\/_/\\/_/"
+					];
+				}
+				# space
+				# { # date/time
+				# 	type = "text";
+				# 	opts = {
+				# 		position = "center";
+				# 		hl = "Comment";
+				# 	};
+				# 	val.__raw = "function() return 
+				# 		os.date '%I:%M %p - ' ..
+				# 		os.date '%A, %b %d'
+				# 	end";
+				# }
+				space
+				{ # main button list
+					type = "group";
+					opts = {
+						position = "center";
+						spacing = 1;
+					};
+					val = builtins.map (item: {
+						type = "button";
+						val = " " + item.text;
+						on_press.__raw = item.fn;
+						opts = {
+							shortcut = item.shortcut;
+							width = 40;
+							position = "center";
+							align_shortcut = "right";
+							hl_shortcut = "Comment";
+						};
+					}) [
+						{
+							text = "󰈔  New";
+							fn = "function() vim.cmd[[ene]] end";
+							shortcut = "i";
+						}
+						{
+							text = "  Recent";
+							fn = "function() vim.cmd[[Telescope oldfiles]] end";
+							shortcut = "r";
+						}
+						{
+							text = "  Projects";
+							fn = "function() vim.cmd[[Telescope projects]] end";
+							shortcut = "p";
+						}
+						{
+							text = "  Search";
+							fn = "function() vim.cmd[[Telescope find_files]] end";
+							shortcut = "f";
+						}
+						{
+							text = "  Exit";
+							fn = "function() vim.cmd[[qa]] end";
+							shortcut = "q";
+						}
+					];
+				}
+				space
+				{ # startup time
+					type = "text";
+					opts = {
+						position = "center";
+						hl = "Comment";
+					};
+					val.__raw = ''
+						function () return
+							"12 plugins loaded in 342ms"
+						end
+					'';
+				}
+			];
+		};
+
+		lz-n = {
+			enable = true;
+		};
+
 	};
 };
 

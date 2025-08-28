@@ -13,7 +13,7 @@ wayland.windowManager.hyprland = {
 			"${pkgs.blueman}/bin/blueman-applet"
 		];
 		general = rec {
-			gaps_in = 4;
+			gaps_in = 6;
 			gaps_out = 12;
 
 			border_size = 2;

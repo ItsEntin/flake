@@ -3,8 +3,11 @@
 programs.nushell = {
 	enable = true;
 	settings = {
-		prompt_command_right = "";
-		prompt_indicator = " >";
+		show_banner = false;
+	};
+	environmentVariables = {
+		PROMPT_INDICATOR = " > ";
+		PROMPT_COMMAND_RIGHT = "";
 	};
 };
 
