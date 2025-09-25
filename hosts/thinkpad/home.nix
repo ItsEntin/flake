@@ -19,6 +19,7 @@
 		/calendar.nix
 		/quickshell.nix
 		# /spotify.nix
+		/udiskie.nix
 	] ++ lib.lists.map (x: ./home-manager + x ) [
 	# Host Modules
 	];
@@ -26,15 +27,19 @@
 	home.packages = with pkgs; [
 		swww
 		obsidian
-		jellyfin-media-player
+		# jellyfin-media-player
 		vesktop
 		qbittorrent
 		protonvpn-gui
+		orca-slicer
+		thunderbird
+		android-studio
 	];
 
 	home.shellAliases = {
 		hms = "home-manager switch --flake ~/flake#thinkpad";
-	}
-;	
+	};
+
+	services.network-manager-applet.enable = true;
 
 }

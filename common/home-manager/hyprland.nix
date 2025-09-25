@@ -8,7 +8,7 @@ wayland.windowManager.hyprland = {
 	settings = {
 		# exec-once = [ "waybar" "swww-daemon" "blueman-applet" ];
 		exec-once = [
-			"${pkgs.waybar}/bin/waybar"
+			# "${pkgs.waybar}/bin/waybar"
 			"${pkgs.swww}/bin/swww-daemon"
 			"${pkgs.blueman}/bin/blueman-applet"
 		];

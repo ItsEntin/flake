@@ -106,6 +106,11 @@ environment.systemPackages = with pkgs; [
 	rustup
 	cargo
 	cifs-utils # for samba mounting
+	cmake
+	ninja
+	flutter
+	dart
+	pkg-config
 ];
 
 fonts.packages = with pkgs; [
@@ -139,6 +144,11 @@ programs.gamemode.enable = true;
 programs.java = {
 	enable = true;
 	package = (pkgs.jdk21.override { enableJavaFX = true; });
+};
+
+services.mysql = {
+	enable = true;
+	package = pkgs.mariadb;
 };
 
 }

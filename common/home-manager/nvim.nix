@@ -23,6 +23,8 @@ programs.nixvim = {
 		signcolumn = "no"; # hide diagnostic signs in gutter
 		colorcolumn = "100";
 		mousemoveevent = true;
+		ignorecase = true;
+		smartcase = true;
 
 		tabstop = 4; # tab width
 		softtabstop = 4; # tab width
@@ -36,7 +38,7 @@ programs.nixvim = {
 		foldexpr = "v:lua.vim.treesitter.foldexpr()";
 		foldlevelstart = 99; # open all folds by default
 
-		pumheight = 15;
+		pumheight = 15; # cmp menu max height
 	};
 	globals = {
 		mapleader = " ";
@@ -56,11 +58,13 @@ programs.nixvim = {
 				base = "#1e1e2e";
 			};
 			custom_highlights = rec {
+				Directory.fg = accent.hex;
 				Folded = { bg = "#313244"; };
+				MsgArea.link = "lualine_c_normal";
 
 				NeoTreeWinSeparator = { bg = "#181825"; fg = "#181825"; };
-				NeoTreeDirectoryIcon = { fg = accent.hex; };
-				NeoTreeDirectoryName = { fg = accent.hex; };
+				NeoTreeDirectoryIcon. fg = accent.hex;
+				NeoTreeDirectoryName.fg = accent.hex;
 				NeoTreeIndentMarker.fg = cat.surface0.hex;
 				NeoTreeRootName.fg = accent.hex;
 				NeoTreeTabActive.fg = accent.hex;
@@ -87,6 +91,12 @@ programs.nixvim = {
 		};
 	};
 	autoCmd = [
+		{ # hide search highlight 
+			event = "InsertEnter";
+			command = "noh";
+			pattern = "*";
+		}
+
 		{ # save folds on exit
 			event = "BufWinLeave";
 			command = "mkview";
@@ -155,11 +165,22 @@ programs.nixvim = {
 			mode = "n";
 		}
 
+		{ # comment line with ctrl + slash
+			key = "<C-_>";
+			action = "gcc";
+			mode = "n";
+		}
+		{
+			key = "<C-_>";
+			action = "gc";
+			mode = "v";
+		}
+
 		{ # ctrl + backspace
 			key = "<C-BS>";
 			action = "<C-W>";
 			mode = "i";
-		}
+		} 
 
 		{ # select pane to left
 			key = "<C-h>";
@@ -235,9 +256,33 @@ programs.nixvim = {
 				silent = true;
 			};
 		}
+		{ # toggle diagnostics
+			key = "<leader>d";
+			action = "Trouble diagnostics toggle";
+			mode = "n";
+			options = {
+				desc = "Toggle diagnostics pane";
+				silent = true;
+			};
+		}
 		{ # toggle terminal
 			key = "<leader>t";
-			action = ":ToggleTerm dir=%:p:h<CR>";
+			# action = ":ToggleTerm dir=%:p:h<CR>";
+			action.__raw = ''
+				function()
+					vim.api.nvim_open_win(
+						vim.api.nvim_create_buf(false, true), -- buffer to open
+						true, -- enter split on open
+						{
+							win = 0, 
+							split = "below", 
+							style = "minimal", 
+							height = 10
+						}
+					)
+					vim.cmd("terminal")
+				end
+			'';
 			mode = "n";
 			options = {
 				desc = "Toggle terminal";
@@ -281,11 +326,11 @@ programs.nixvim = {
 					settings = {
 						options = {
 							nixos.expr = /*nix*/ ''
-								(builtins.getFlake ("git+file://" + toString ./../..))
+								(builtins.getFlake "/home/evren/flake")
 								.nixosConfigurations.thinkpad.options
 							'';
 							home-manager.expr = /*nix*/ ''
-								(builtins.getFlake ("git+file://" + toString ./../..))
+								(builtins.getFlake "/home/evren/flake")
 								.homeConfigurations.thinkpad.options
 							'';
 						};
@@ -293,6 +338,12 @@ programs.nixvim = {
 							"sema-unused-def-lambda-noarg-formal"
 						];
 					};
+				};
+				rust_analyzer = {
+					enable = true;
+					installCargo = true;
+					installRustc = true;
+					installRustfmt = true;
 				};
 				lua_ls.enable = true; # lua
 				yamlls.enable = true; # yaml
@@ -302,6 +353,7 @@ programs.nixvim = {
 				phpactor.enable = true; # php
 				clangd.enable = true; # c
 				marksman.enable = true; # markdown
+				sqls.enable = true; #sql
 			};
 		};
 
@@ -313,6 +365,26 @@ programs.nixvim = {
 			enable = true;
 			settings = {
 				highlight.enable = true;
+				indent.enable = false;
+			};
+		};
+
+		blink-cmp = {
+			enable = false;
+			setupLspCapabilities = false;
+			settings = {
+				signature = {
+					enable = true;
+				};
+				snippets = {
+					preset = "luasnip";
+				};
+				sources = {
+					default = [ "lsp" "path" ];
+					providers = {
+						lsp = {};
+					};
+				};
 			};
 		};
 
@@ -382,7 +454,7 @@ programs.nixvim = {
 
 		lspkind = {
 			enable = true;
-			cmp.enable = true;
+			cmp.enable = config.programs.nixvim.plugins.cmp.enable;
 			settings = {
 				mode = "symbol";
 			};
@@ -397,7 +469,9 @@ programs.nixvim = {
 			lazyLoad.settings.event = "InsertEnter";
 		};
 
-		trouble.enable = true;
+		trouble = {
+			enable = true;
+		};
 
 		lint = {
 			enable = true;
@@ -407,6 +481,18 @@ programs.nixvim = {
 			enable = true;
 			settings = {
 				options = {
+					# theme.__raw = "cat";
+					theme.__raw = ''
+						function()
+							local cat = require("lualine.themes.catppuccin")
+							cat.normal.a.bg = '${accent.hex}'
+							cat.normal.b.fg = '${accent.hex}'
+							cat.insert.a.bg = '${cat.sapphire.hex}'
+							cat.insert.b.fg = '${cat.sapphire.hex}'
+							cat.inactive.c.bg = '${cat.mantle.hex}'
+							return cat
+						end
+					'';
 					icons_enabled = true;
 					component_separators = { left = ""; right = ""; };
 					section_separators = { left = ""; right = ""; };
@@ -414,6 +500,7 @@ programs.nixvim = {
 						"neo-tree"
 						"toggleterm"
 						"alpha"
+						"term"
 					];
 				};
 				extensions = [
@@ -452,6 +539,13 @@ programs.nixvim = {
 					lualine_y = ["branch" "diagnostics"];
 					lualine_z = ["location"];
 				};
+				# winbar = {
+				# 	lualine_c = [
+				# 		{
+				# 			__unkeyed-1 = "navic";
+				# 		}
+				# 	];
+				# };
 			};
 		};
 
@@ -502,6 +596,15 @@ programs.nixvim = {
 				];
 			};
 		};
+
+		# barbar = {
+		# 	enable = true;
+		# 	settings = {
+		# 		sidebar_filetypes = {
+		# 			neo-tree = true;
+		# 		};
+		# 	};
+		# };
 
 		bufferline = {
 			enable = true;
@@ -617,7 +720,7 @@ programs.nixvim = {
 			lazyLoad.settings.cmd = "Telescope";
 			settings = {
 				defaults = {
-					prompt_prefix = "  ";
+					prompt_prefix = "   ";
 					# selection_caret = "";
 					borderchars = lib.lists.replicate 8 " ";
 				};
@@ -692,7 +795,7 @@ programs.nixvim = {
 		};
 
 		alpha = {
-			enable = true;
+			enable = false;
 			layout = let
 				pad = x: { type = "padding"; val = x; };
 				space = pad 2;
@@ -739,6 +842,13 @@ programs.nixvim = {
 							width = 40;
 							position = "center";
 							align_shortcut = "right";
+			winbar = {
+				lualine_c = [
+					{
+						__unkeyed-1 = "navic";
+					}
+				];
+			};
 							hl_shortcut = "Comment";
 						};
 					}) [
@@ -787,6 +897,21 @@ programs.nixvim = {
 
 		lz-n = {
 			enable = true;
+		};
+
+		dropbar = {
+			enable = true;
+		};
+
+		ts-autotag.enable = true;
+
+		illuminate = {
+			enable = true;
+			delay = 0;
+			filetypesDenylist = [
+				"TelescopePrompt"
+				"markdown"
+			];
 		};
 
 	};

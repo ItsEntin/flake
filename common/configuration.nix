@@ -19,6 +19,9 @@
 	nixpkgs.config = {
 		allowUnfree = true;
 		allowBroken = true;
+		permittedInsecurePackages = [
+			"qtwebengine-5.15.19"
+		];
 	};
 	nix.settings.experimental-features = [
 		"nix-command"

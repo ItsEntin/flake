@@ -1,5 +1,5 @@
 {
-	description = "evrens nixos configurations :3";
+	description = "evrens nix config flake";
 
 	inputs = {
 		nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
@@ -50,12 +50,9 @@
 
 		in{
 
-			# thinkpad = lib.nixosSystem ( common // {
-			# 	modules = modules ++ [
-			# 		./hosts/thinkpad/configuration.nix
-			# 		./themes
-			# 	];
-			# });
+			bootstrap = mkSystem [
+				./hosts/bootstrap/configuration.nix
+			];
 
 			thinkpad = mkSystem [
 				./hosts/thinkpad/configuration.nix
@@ -63,25 +60,14 @@
 				./secrets
 			];
 
-			# msi = lib.nixosSystem ( common // {
-			# 	modules = modules ++ [
-			# 		./hosts/msi
-			# 		./themes
-			# 	];
-			# });
-
-			# nixlab = lib.nixosSystem ( common // {
-			# 	modules = modules ++ [
-			# 		./hosts/nixlab/configuration.nix
-			# 		./services
-			# 		./secrets
-			# 	];
-			# });
-
 			nixlab = mkSystem [
 				./hosts/nixlab/configuration.nix
 				./services
 				./secrets
+			];
+
+			printer = mkSystem [
+				./hosts/printer/configuration.nix
 			];
 
 			wsl = lib.nixosSystem {
