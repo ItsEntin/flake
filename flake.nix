@@ -68,6 +68,8 @@
 
 			printer = mkSystem [
 				./hosts/printer/configuration.nix
+				hmModule
+				./common/home.nix
 			];
 
 			wsl = lib.nixosSystem {
