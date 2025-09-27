@@ -68,7 +68,7 @@
 
 			printer = mkSystem [
 				./hosts/printer/configuration.nix
-				hmModule
+				hmModule "printer"
 				./common/home.nix
 			];
 
