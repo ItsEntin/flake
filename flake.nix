@@ -32,7 +32,7 @@
 				inherit system;
 				specialArgs = { inherit inputs; };
 			};
-			modules = [
+			commonModules = [
 				inputs.catppuccin.nixosModules.catppuccin
 				inputs.nixvim.nixosModules.nixvim
 				inputs.agenix.nixosModules.default
@@ -40,7 +40,7 @@
 				./common/configuration.nix
 			];
 			mkSystem = mods: lib.nixosSystem (common // {
-				modules = modules ++ mods;
+				modules = commonModules ++ mods;
 			});
 			hmModule = host: ( home-manager.nixosModules.home-manager {
 				home-manager.useGlobalPkgs = true;
@@ -83,7 +83,17 @@
 			};
 		};
 
-		homeConfigurations = {
+		homeConfigurations = let
+			mkHome = mods: home-manager.lib.homeManagerConfiguration {
+				pkgs = import nixpkgs { inherit system; };
+				modules = hmCommonModules ++ mods;
+			};
+			hmCommonModules = [
+				inputs.catppuccin.homeModules.catppuccin
+				inputs.nixvim.homeManagerModules.nixvim
+				common/home.nix
+			];
+		in {
 			thinkpad = home-manager.lib.homeManagerConfiguration {
 				pkgs = import nixpkgs { system = "x86_64-linux"; };
 				modules = [
@@ -114,6 +124,9 @@
 					hosts/nixlab/home.nix
 				];
 			};
+			printer = mkHome [
+				
+			];
 			wsl = home-manager.lib.homeManagerConfiguration {
 				pkgs = import nixpkgs { system = "x86_64-linux"; };
 				modules = [
