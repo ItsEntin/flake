@@ -5,6 +5,7 @@ wayland.windowManager.hyprland = {
 	plugins = with pkgs.hyprlandPlugins; [
 		# hyprbars
 		hypr-dynamic-cursors
+		hyprexpo
 	];
 	settings = {
 		exec-once = [
@@ -12,6 +13,7 @@ wayland.windowManager.hyprland = {
 			"${pkgs.swww}/bin/swww-daemon"
 			"${pkgs.blueman}/bin/blueman-applet"
 			"${pkgs.vicinae}/bin/vicinae server"
+			"${pkgs.signal-desktop}/bin/signal-desktop"
 		];
 		general = {
 			gaps_in = 6;
@@ -34,6 +36,7 @@ wayland.windowManager.hyprland = {
 		};
 
 		decoration = {
+			border_part_of_window = false;
 			rounding = 12;
 			shadow = {
 				color = "$crust";
@@ -165,31 +168,45 @@ wayland.windowManager.hyprland = {
 			"SUPER, mouse:273, resizewindow"
 		];
 		windowrule = [
-			# "float, onworkspace:w[1], class:kitty"
-			# "size 500 400, onworkspace:w[1], class:kitty"
-			"noborder, onworkspace:w[t1]"
-			"plugin:hyprbars:nobar, onworkspace:n[e:s]"
+
+			{
+				name = "solo-no-border";
+				"match:workspace" = "w[t1]";
+				border_color = "transparent";
+			}
+
 			# Float windows with class:
-			] ++ lib.lists.map (class: "float, class:(.*${class}.*)") [
-				"nm-connection-editor"
-				"blueman"
-				"pavucontrol"
+			] ++ lib.lists.map (class: {
+				name = "float-" + class;
+				"match:class" = class; 
+				float = true;
+			}) [
+			"blueman"
+			"nm-connection-editor"
+			"overskride"
+			"pavucontrol"
+
 			# Always full brightness:
-			] ++ lib.lists.map (title: "nodim, title:(.*${title}).*") [
-				"YouTube"
-				"Disney"
-				"Dropout"
-				"Netflix"
+			] ++ lib.lists.map (title: {
+				name = "nodim-" + title;
+				"match:title" = ".*${title}.*";
+				no_dim = true;
+			}) [
+			"YouTube"
+			"Disney"
+			"Dropout"
+			"Netflix"
 		];
 
 		layerrule = [
-			# {
-			# 	name = "vicinae-blur";
-			# 	blur = "on";
-			# 	ignore_alpha = 0;
-			# 	"match:namespace" = "vicinae";
-			# }
-			"blur, ignore_alpha 0, match:namespace vicinae"
+			{
+				name = "vicinae-blur";
+				"match:namespace" = "vicinae";
+				blur = "on";
+				ignore_alpha = 0;
+				dim_around = true;
+			}
+			# "blur, ignore_alpha 0, match:namespace vicinae"
 		];
 
 		debug = {
@@ -214,6 +231,13 @@ wayland.windowManager.hyprland = {
 				shake = {
 					enabled = false;
 				};
+			};
+			hyprexpo = {
+				gap_size = 12;
+				skip_empty = true;
+				hyprexpo-gesture = [
+					"3, up, expo"
+				];
 			};
 		};
 	};

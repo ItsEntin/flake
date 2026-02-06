@@ -807,7 +807,7 @@ programs.nixvim = {
 
 		alpha = {
 			enable = false;
-			layout = let
+			settings.layout = let
 				pad = x: { type = "padding"; val = x; };
 				space = pad 2;
 			in [

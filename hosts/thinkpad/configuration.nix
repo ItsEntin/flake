@@ -113,13 +113,13 @@ nix.settings.experimental-features = [
 	"flakes"
 ];
 
-powerManagement = {
-	enable = true;
-};
-
-services.tlp = {
-	enable = true;
-};
+# powerManagement = {
+# 	enable = true;
+# };
+#
+# services.tlp = {
+# 	enable = true;
+# };
 
 environment.systemPackages = with pkgs; [
 	vim
@@ -188,6 +188,11 @@ programs.java = {
 services.mysql = {
 	enable = true;
 	package = pkgs.mariadb;
+};
+
+programs.appimage = {
+	enable = true;
+	binfmt = true;
 };
 
 }

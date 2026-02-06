@@ -39,6 +39,7 @@
 		jetbrains-toolbox
 		zathura
 		pandoc
+		signal-desktop
 	];
 
 	home.shellAliases = {
