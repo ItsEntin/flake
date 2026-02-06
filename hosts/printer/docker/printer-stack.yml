@@ -1,0 +1,20 @@
+services:
+  klipper:
+    container_name: klipper
+    image: mkuf/klipper:latest
+    privileged: true
+    volumes:
+      - /dev:/dev:ro
+      - ./klipper/printer.cfg:/opt/printer_data/config/printer.cfg
+      - ./klipper/data/run:/opt/printer_data/run
+      - ./klipper/data/gcodes:/opt/printer_data/gcodes
+
+  moonraker:
+    container_name: moonraker
+    image: mkuf/moonraker:latest
+
+  mainsail:
+    container_name: mainsail
+    image: ghcr.io/mainsail-crew/mainsail
+    volumes:
+      - ./mainsail/config.json:/usr/share/nginx/html/config.json

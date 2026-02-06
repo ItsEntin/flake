@@ -2,8 +2,10 @@
 	
 	programs.git = {
 		enable = true;
-		userName = "evren";
-		userEmail = "evren@evren.gay";
+		settings = {
+			# userName = "evren";
+			# userEmail = "evren@evren.gay";
+		};
 	};
 
 	home.shellAliases = {

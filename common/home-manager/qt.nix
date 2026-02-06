@@ -1,10 +1,17 @@
 { config, pkgs, ... }: {
 
-qt = {
+qt = rec {
 	enable = true;
 	style = {
 		name = "kvantum";
 	};
+	qt6ctSettings = {
+		Appearance = {
+			style = "kvantum";
+			icon_theme = "Whitesur-dark";
+		};
+	};
+	qt5ctSettings = qt6ctSettings;
 	platformTheme.name = "kvantum";
 };
 

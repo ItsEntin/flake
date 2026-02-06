@@ -3,6 +3,7 @@
 
 	inputs = {
 		nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+		nixos-hardware.url = "github:nixos/nixos-hardware/master";
 		home-manager = {
 			url = "github:nix-community/home-manager";
 			inputs.nixpkgs.follows = "nixpkgs";
@@ -19,9 +20,13 @@
 			inputs.nixpkgs.follows = "nixpkgs";
 		};
 		nixos-wsl.url = "github:nix-community/NixOS-WSL/main";
+		zen-browser = {
+			url = "github:youwen5/zen-browser-flake";
+			inputs.nixpkgs.follows = "nixpkgs";
+		};
 	};
 
-	outputs = inputs@{ self, nixpkgs, home-manager, ... }: let
+	outputs = inputs@{ self, nixpkgs, nixos-hardware, home-manager, ... }: let
 		lib = nixpkgs.lib;
 		system = "x86_64-linux";
 	in {
@@ -55,6 +60,7 @@
 			];
 
 			thinkpad = mkSystem [
+				nixos-hardware.nixosModules.lenovo-thinkpad-t480s
 				./hosts/thinkpad/configuration.nix
 				./themes
 				./secrets

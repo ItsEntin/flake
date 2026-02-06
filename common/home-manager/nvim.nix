@@ -14,7 +14,7 @@ programs.nixvim = {
 	enable = true;
 	opts = {
 		number = true; # number line
-		relativenumber = true; # relative line numbers
+		# relativenumber = true; # relative line numbers
 		scrolloff = 8; # space left at top/bottom when scrolling
 		cursorline = true; # highlight active line
 		wrap = false;  #wrap lines at edge
@@ -61,6 +61,8 @@ programs.nixvim = {
 				Directory.fg = accent.hex;
 				Folded = { bg = "#313244"; };
 				MsgArea.link = "lualine_c_normal";
+				CursorLineNr.fg = cat.overlay1.hex;
+				CursorLineNr.bg = "#2a2b3d";
 
 				NeoTreeWinSeparator = { bg = "#181825"; fg = "#181825"; };
 				NeoTreeDirectoryIcon. fg = accent.hex;
@@ -267,22 +269,22 @@ programs.nixvim = {
 		}
 		{ # toggle terminal
 			key = "<leader>t";
-			# action = ":ToggleTerm dir=%:p:h<CR>";
-			action.__raw = ''
-				function()
-					vim.api.nvim_open_win(
-						vim.api.nvim_create_buf(false, true), -- buffer to open
-						true, -- enter split on open
-						{
-							win = 0, 
-							split = "below", 
-							style = "minimal", 
-							height = 10
-						}
-					)
-					vim.cmd("terminal")
-				end
-			'';
+			action = ":ToggleTerm dir=%:p:h<CR>";
+			# action.__raw = ''
+			# 	function()
+			# 		vim.api.nvim_open_win(
+			# 			vim.api.nvim_create_buf(false, true), -- buffer to open
+			# 			true, -- enter split on open
+			# 			{
+			# 				win = 0, 
+			# 				split = "below", 
+			# 				style = "minimal", 
+			# 				height = 10
+			# 			}
+			# 		)
+			# 		vim.cmd("terminal")
+			# 	end
+			# '';
 			mode = "n";
 			options = {
 				desc = "Toggle terminal";
@@ -291,11 +293,13 @@ programs.nixvim = {
 		}
 	];
 	diagnostic.settings = {
-		virtual_text = {
-			prefix = "●";
-			spacing = 1;
-		};
 		signs = {
+			numhl.__raw = ''{
+				[vim.diagnostic.severity.ERROR] = 'DiagnosticSignError',
+				[vim.diagnostic.severity.WARN] = 'DiagnosticSignWarn',
+				[vim.diagnostic.severity.INFO] = 'DiagnosticSignInfo',
+				[vim.diagnostic.severity.HINT] = 'DiagnosticSignHint',
+			}'';
 			text.__raw = /*lua*/ '' {
 				[vim.diagnostic.severity.ERROR] = '',
 				[vim.diagnostic.severity.WARN] = '',
@@ -353,7 +357,9 @@ programs.nixvim = {
 				phpactor.enable = true; # php
 				clangd.enable = true; # c
 				marksman.enable = true; # markdown
-				sqls.enable = true; #sql
+				sqls.enable = true; # sql
+				dartls.enable = true; # dart
+				hyprls.enable = true; # hypr
 			};
 		};
 
@@ -482,6 +488,7 @@ programs.nixvim = {
 			settings = {
 				options = {
 					# theme.__raw = "cat";
+					globalstatus = true;
 					theme.__raw = ''
 						function()
 							local cat = require("lualine.themes.catppuccin")
@@ -573,7 +580,7 @@ programs.nixvim = {
 		# smear-cursor.enable = true;
 
 		origami = {
-			enable = true;
+			enable = false;
 			settings = {
 				foldKeymaps = {
 					setup = false;
@@ -614,7 +621,7 @@ programs.nixvim = {
 					middle_mouse_command = "bdelete! %d";
 					modified_icon = "󰏫";
 					separator_style = "thick";
-					always_show_bufferline = true;
+					always_show_bufferline = false;
 					indicator.icon = "▌";
 					offsets = [
 						{
@@ -647,48 +654,52 @@ programs.nixvim = {
 
 		neo-tree = {
 			enable = true;
-			closeIfLastWindow = true;
-			# addBlankLineAtTop = true;
-			sources = [
-				"filesystem"
-				"buffers"
-				"document_symbols"
-			];
-			window = {
-				width = 30;
-				mappings = {
-					l = "open";
-					h = "close_node";
-				};
-			};
-			defaultComponentConfigs = {
-				icon.default = "󰈔";
-				modified.symbol = "󰏫";
-			};
-			eventHandlers = {
-				neo_tree_buffer_enter = "function() vim.cmd 'highlight! Cursor blend=100' end";
-				neo_tree_buffer_leave = "function() vim.cmd 'highlight! Cursor blend=0' end";
-			};
-            sourceSelector = {
-				# winbar = true;
-				contentLayout = "center";
+			settings = {
+				# closeIfLastWindow = true;
+				close_if_last_window = true;
+				# addBlankLineAtTop = true;
 				sources = [
-					{
-						source = "filesystem";
-						displayName = "󰉓 File";
-					}
-					{
-						source = "buffers";
-						displayName = "󰈚 Buffer";
-					}
-					{
-						source = "document_symbols";
-						displayName = "󰆧 Symbol";
-					}
+					"filesystem"
+					"buffers"
+					"document_symbols"
 				];
-            };
-			filesystem = {
-				followCurrentFile.enabled = true;
+				window = {
+					width = 30;
+					mappings = {
+						l = "open";
+						h = "close_node";
+					};
+				};
+				default_component_configs = {
+					icon.default = "󰈔";
+					modified.symbol = "󰏫";
+				};
+				event_handlers = {
+					neo_tree_buffer_enter = "function() vim.cmd 'highlight! Cursor blend=100' end";
+					neo_tree_buffer_leave = "function() vim.cmd 'highlight! Cursor blend=0' end";
+				};
+				source_selector = {
+					# winbar = true;
+					content_layout = "center";
+					sources = [
+						{
+							source = "filesystem";
+							displayName = "󰉓 File";
+						}
+						{
+							source = "buffers";
+							displayName = "󰈚 Buffer";
+						}
+						{
+							source = "document_symbols";
+							displayName = "󰆧 Symbol";
+						}
+					];
+				};
+				filesystem = {
+					follow_current_file.enabled = true;
+					leave_dirs_open = true;
+				};
 			};
 		};
 
@@ -907,12 +918,49 @@ programs.nixvim = {
 
 		illuminate = {
 			enable = true;
-			delay = 0;
-			filetypesDenylist = [
-				"TelescopePrompt"
-				"markdown"
-			];
+			settings = {
+				delay = 0;
+				filetypesDenylist = [
+					"TelescopePrompt"
+					"markdown"
+				];
+			};
 		};
+
+		flutter-tools = {
+			enable = true;
+		};
+
+		tiny-inline-diagnostic = {
+			enable = true;
+			settings = {
+				blend.factor = 0.13;
+				signs = {
+					left = "";
+					right = "";
+					arrow = " ";
+
+					vertical_end = " ";
+					vertical = " ";
+					up_arrow = "u";
+				};
+				options = {
+					show_related.enabled = false;
+				};
+			};
+		};
+
+		tiny-glimmer = {
+			enable = true;
+		};
+
+		tiny-devicons-auto-colors = {
+			enable = true;
+		};
+
+		# smear-cursor = {
+		# 	enable = true;
+		# };
 
 	};
 };

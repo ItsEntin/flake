@@ -8,7 +8,7 @@
 	};
 
 	home.packages = with pkgs; [
-		gnomeExtensions.topicons-plus
+		whitesur-icon-theme
 	];
 
 }

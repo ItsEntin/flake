@@ -2,7 +2,7 @@
 # your system. Help is available in the configuration.nix(5) man page, on
 # https://search.nixos.org/options and in the NixOS manual (`nixos-help`).
 
-{ config, lib, pkgs, ... }:
+{ config, lib, pkgs, inputs, ... }:
 
 {
   imports =
@@ -16,14 +16,42 @@ networking.hostName = "nixos";
 system.stateVersion = "24.11"; # Do not change!
 
 # Use the systemd-boot EFI boot loader.
-boot.loader.systemd-boot.enable = true;
-boot.loader.efi.canTouchEfiVariables = true;
-boot.loader.grub.device = "nodev";
+# boot.loader.systemd-boot.enable = true;
+# boot.loader.efi.canTouchEfiVariables = true;
+# boot.loader.grub.device = "nodev";
+
+boot = {
+	consoleLogLevel = 3;
+	initrd.verbose = false;
+	initrd.systemd.enable = false;
+	loader = {
+		systemd-boot.enable = true;
+		efi.canTouchEfiVariables = true;
+		grub.device = "nodev";
+		timeout = 0;
+	};
+	kernelParams = [
+		"quiet"
+		"splash"
+		"initremap=on"
+		"boot.shell_on_fail"
+		"udev.log_priority=3"
+		"rd.systemd.show_status=auto"
+	];
+	plymouth = {
+		enable = true;
+		theme = "spinner";
+		logo = "${pkgs.nixos-icons}/share/icons/hicolor/128x128/apps/nix-snowflake.png";
+		font = "${pkgs.hack-font}/share/fonts/truetype/Hack-Regular.ttf";
+	};
+};
+catppuccin.plymouth.enable = false;
 
 services.displayManager.sddm = {
 	enable = true;
 	wayland.enable = true;
-	theme = "where-is-my-sddm-theme";
+	# theme = "${pkgs.where-is-my-sddm-theme.override { variants = [ "qt5" ]; }}/share/sddm/themes/where_is_my_sddm_theme_qt5";
+	theme = "where_is_my_sddm_theme";
 	extraPackages = [pkgs.where-is-my-sddm-theme];
 };
 catppuccin.sddm.enable = false;
@@ -85,6 +113,14 @@ nix.settings.experimental-features = [
 	"flakes"
 ];
 
+powerManagement = {
+	enable = true;
+};
+
+services.tlp = {
+	enable = true;
+};
+
 environment.systemPackages = with pkgs; [
 	vim
 	# neovim
@@ -111,15 +147,18 @@ environment.systemPackages = with pkgs; [
 	flutter
 	dart
 	pkg-config
+	nodejs
+	# where-is-my-sddm-theme
+	inputs.zen-browser.packages.${pkgs.stdenv.hostPlatform.system}.default
 ];
 
 fonts.packages = with pkgs; [
 	jetbrains-mono
 	noto-fonts
 	noto-fonts-cjk-sans
-	noto-fonts-emoji
+	noto-fonts-color-emoji
 	liberation_ttf
-	ubuntu_font_family
+	ubuntu-classic
 	inter
 ];
 

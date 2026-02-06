@@ -18,6 +18,8 @@
 		/zellij.nix
 		/zoxide.nix
 		/nushell.nix
+		/yazi.nix
+		/starship.nix
 	];
 
 	home.packages = with pkgs; [
@@ -32,7 +34,7 @@
 	home.pointerCursor = {
 		name = "phinger-cursors-dark";
 		package = pkgs.phinger-cursors;
-		size = 24;
+		size = 32;
 		gtk.enable = true;
 	};
 

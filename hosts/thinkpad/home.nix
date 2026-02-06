@@ -12,14 +12,16 @@
 		/rofi.nix
 		/syncthing.nix
 		/jetbrains.nix
-		/mako.nix
+		# /mako.nix
 		/gtk.nix
 		/qt.nix
-		/swaync.nix
+		# /swaync.nix
 		/calendar.nix
 		/quickshell.nix
 		# /spotify.nix
 		/udiskie.nix
+		/ghostty.nix
+		/vicinae.nix
 	] ++ lib.lists.map (x: ./home-manager + x ) [
 	# Host Modules
 	];
@@ -34,6 +36,9 @@
 		orca-slicer
 		thunderbird
 		android-studio
+		jetbrains-toolbox
+		zathura
+		pandoc
 	];
 
 	home.shellAliases = {
@@ -41,5 +46,6 @@
 	};
 
 	services.network-manager-applet.enable = true;
+	services.tailscale-systray.enable = true;
 
 }

@@ -13,7 +13,15 @@
 		options = "caps:escape";
 	};
 
-	programs.zsh.enable = true;
+	environment.shells = [pkgs.nushell];
+	programs.zsh = {
+		enable = true;
+		interactiveShellInit = /*sh*/ ''
+			if ! [ "$TERM" = "dumb" ] && [ -z "$BASH_EXECUTION_STRING" ]; then
+				exec nu
+			fi
+		'';
+	};
 	users.defaultUserShell = pkgs.zsh;
 
 	nixpkgs.config = {
@@ -21,6 +29,7 @@
 		allowBroken = true;
 		permittedInsecurePackages = [
 			"qtwebengine-5.15.19"
+			"gradle-7.6.6"
 		];
 	};
 	nix.settings.experimental-features = [

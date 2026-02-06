@@ -4,15 +4,16 @@ wayland.windowManager.hyprland = {
 	enable = true;
 	plugins = with pkgs.hyprlandPlugins; [
 		# hyprbars
+		hypr-dynamic-cursors
 	];
 	settings = {
-		# exec-once = [ "waybar" "swww-daemon" "blueman-applet" ];
 		exec-once = [
 			# "${pkgs.waybar}/bin/waybar"
 			"${pkgs.swww}/bin/swww-daemon"
 			"${pkgs.blueman}/bin/blueman-applet"
+			"${pkgs.vicinae}/bin/vicinae server"
 		];
-		general = rec {
+		general = {
 			gaps_in = 6;
 			gaps_out = 12;
 
@@ -27,6 +28,9 @@ wayland.windowManager.hyprland = {
 
 		misc = {
 			disable_hyprland_logo = true;
+			# animate_mouse_windowdragging = true;
+			focus_on_activate = true;
+			middle_click_paste = false;
 		};
 
 		decoration = {
@@ -46,8 +50,18 @@ wayland.windowManager.hyprland = {
 
 		animations = {
 			animation = [
-				"border, 1, 4, default"
-				"fade, 1, 4, default"
+				"border, 0"
+				"fade, 0"
+				"windows, 1,3, easeExpo, slide"
+				# "border,	1,	4,	default"
+				# "fade,		1,	4,	default"
+
+				"workspaces,1,	4,	easeExpo"
+			];
+			bezier = [
+				"easeCubic,	0.65,	0,	0.35,	1"
+				"easeExpo,	0.87,	0,	0.13,	1"
+				"custom,	0.6,	0,	0.15,	1"
 			];
 		};
 
@@ -67,42 +81,50 @@ wayland.windowManager.hyprland = {
 			];
 
 		gestures = {
-			workspace_swipe = true;
+			workspace_swipe_direction_lock = false;
 		};
 
+		gesture = [
+			"3, horizontal, workspace"
+		];
+
 		monitor = [
-			"eDP-1, 1920x1080@60, 0x0, 1"
-			"HDMI-A-2, 1920x1080@120.00, auto, 1"
-			# "HDMI-A-2, 1920x1080@120.00, auto, 0.83333333333"
-			", preferred, auto, 0.9"
+			"eDP-1,		1920x1080@60,		0x0,	1"
+			"HDMI-A-2,	1920x1080@120.00,	auto,	1"
+			",			preferred,			auto,	0.9"
 		];
 
 		bind = 
 		let
-			dispatch = "${pkgs.hyprland}/bin/hyprctl dispatch";
+			# dispatch = "${pkgs.hyprland}/bin/hyprctl dispatch";
+			hyprshot = "${pkgs.hyprshot}/bin/hyprshot";
 		in [
-			"SUPER, return, exec, ${pkgs.kitty}/bin/kitty" # Open Kitty
-			"SUPER, space, exec, rofi -show drun" # Open Rofi
-			"SUPER, Shift_R, exec, ${pkgs.firefox}/bin/firefox" # Open Firefox
-			"SUPER, q, killactive" # Kill current window
-			"SUPER, esc, exit" # Exit Hyprland
+			"SUPER,	return,		exec, ${pkgs.ghostty}/bin/ghostty +new-window" # Open Ghostty
+			"SUPER,	space,		exec, ${pkgs.vicinae}/bin/vicinae toggle" # Open Vicinae
+			"SUPER, Shift_R,	exec, zen" # Open Firefox
+			"SUPER, q,			killactive" # Kill current window
+			"SUPER, esc,		exit" # Exit Hyprland
 
-			"SUPER, f, fullscreen, 0" # Fullscreen current window
-			"SUPER, w, fullscreen, 1" # Maximize current window
-			"SUPER, s, togglefloating" # Toggle current window floating/tiling
-			"SUPER, g, togglegroup" # Toggle grouped window
+			"SUPER, f,			fullscreen,		0" # Fullscreen current window
+			"SUPER, w,			fullscreen,		1" # Maximize current window
+			"SUPER, s,			togglefloating" # Toggle current window floating/tiling
+			"SUPER, g,			togglegroup" # Toggle grouped window
 
-			"SUPER, tab, workspace, m+1"
+			"SUPER, period,			exec, ${pkgs.vicinae}/bin/vicinae vicinae://extensions/vicinae/core/search-emojis" # emoji picker
 
-			",XF86MonBrightnessUp, exec, light -A 10" # Increase brightness by 10%
-			",XF86MonBrightnessDown, exec, light -U 10" # Decrease brightness by 10%
+			"SUPER, tab,		workspace,		m+1"
 
-			",XF86AudioRaiseVolume, exec, wpctl set-volume @DEFAULT_SINK@ 5%+" # Increase volume by 5%
-			",XF86AudioLowerVolume, exec, wpctl set-volume @DEFAULT_SINK@ 5%-" # Decrease volume by 5%
-			",XF86AudioMute, exec, wpctl set-mute @DEFAULT_SINK@ toggle" # Toggle mute
+			",		XF86MonBrightnessUp,	exec,	light -A 10" # Increase brightness by 10%
+			",		XF86MonBrightnessDown,	exec,	light -U 10" # Decrease brightness by 10%
 
-			'',Print, exec, ${pkgs.grim}/bin/grim -g "$(${pkgs.slurp}/bin/slurp -w 0 -d)" - | wl-copy && ${pkgs.libnotify}/bin/notify-send "Screenshot taken!" "Image copied to clipboard."''
-			''Shift, Print, exec, ${pkgs.grim}/bin/grim -g "$(${pkgs.slurp}/bin/slurp -w 0 -d)" && ${pkgs.libnotify}/bin/notify-send "Screenshot taken!" "Image saved to ~/Pictures"''
+			",		XF86AudioRaiseVolume,	exec,	wpctl set-volume @DEFAULT_SINK@ 5%+" # Increase volume by 5%
+			",		XF86AudioLowerVolume,	exec,	wpctl set-volume @DEFAULT_SINK@ 5%-" # Decrease volume by 5%
+			",		XF86AudioMute,			exec,	wpctl set-mute @DEFAULT_SINK@ toggle" # Toggle mute
+
+			# '',Print, exec, ${pkgs.grim}/bin/grim -g "$(${pkgs.slurp}/bin/slurp -w 0 -d)" - | wl-copy && ${pkgs.libnotify}/bin/notify-send "Screenshot taken!" "Image copied to clipboard."''
+			# ''Shift, Print, exec, ${pkgs.grim}/bin/grim -g "$(${pkgs.slurp}/bin/slurp -w 0 -d)" && ${pkgs.libnotify}/bin/notify-send "Screenshot taken!" "Image saved to ~/Pictures"''
+
+			",		Print,		exec,	${hyprshot} -m region"
 
 			''SUPER, c, exec, ${pkgs.writeShellScriptBin "color-picker" ''
 				color = $(${pkgs.hyprpicker}/bin/hyprpicker -a)
@@ -142,7 +164,9 @@ wayland.windowManager.hyprland = {
 			"SUPER, mouse:272, movewindow"
 			"SUPER, mouse:273, resizewindow"
 		];
-		windowrulev2 = [
+		windowrule = [
+			# "float, onworkspace:w[1], class:kitty"
+			# "size 500 400, onworkspace:w[1], class:kitty"
 			"noborder, onworkspace:w[t1]"
 			"plugin:hyprbars:nobar, onworkspace:n[e:s]"
 			# Float windows with class:
@@ -156,20 +180,47 @@ wayland.windowManager.hyprland = {
 				"Disney"
 				"Dropout"
 				"Netflix"
-			];
+		];
+
+		layerrule = [
+			# {
+			# 	name = "vicinae-blur";
+			# 	blur = "on";
+			# 	ignore_alpha = 0;
+			# 	"match:namespace" = "vicinae";
+			# }
+			"blur, ignore_alpha 0, match:namespace vicinae"
+		];
 
 		debug = {
 			# disable_scale_checks = true;
 		};
 		
-		# plugin = {
-		# 	hyprbars = {
-		# 		hyprbars-button = [
-		# 			"#1e1e2e,5,m,fullscreen,"
-		# 		];
-		# 	};
-		# };
+		plugin = {
+			hyprbars = {
+				bar_height = 24;
+				bar_color = "$mantle";
+				"col.text" = "$text";
+				bar_text_font = "JetBrains Mono Nerd Font";
+				bar_precedence_over_border = true;
+				hyprbars-button = [
+					"$surface0,18,,hyprctl dispatch closewindow,$text"
+					"$surface0,18,󰖯,hyprctl dispatch fullscreen 1,$text"
+				];
+			};
+			dynamic-cursors = {
+				enabled = true;
+				mode = "tilt";
+				shake = {
+					enabled = false;
+				};
+			};
+		};
 	};
+};
+
+home.sessionVariables = {
+	HYPRSHOT_DIR = "Pictures/Screenshots/";
 };
 
 }

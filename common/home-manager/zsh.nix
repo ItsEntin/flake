@@ -13,19 +13,20 @@ programs.zsh = {
 	};
 
 	initContent = /*sh*/ ''
-		PS1='%~ > '
-		WORDCHARS=""
-		bindkey '^H' backward-kill-word
-		eval "$(direnv hook zsh)"
+		# PS1='%~ > '
+		# WORDCHARS=""
+		# bindkey '^H' backward-kill-word
+		# eval "$(direnv hook zsh)"
+		exec nu
 	'';
 
 	completionInit = /*sh*/ ''
-		zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}'
-		zstyle ':completion:*' menu select
+		# zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}'
+		# zstyle ':completion:*' menu select
 	'';
 
 	autosuggestion = {
-		enable = true;
+		# enable = true;
 	};
 
 	zprof.enable = false;

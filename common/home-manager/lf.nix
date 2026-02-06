@@ -12,18 +12,38 @@ programs.lf = {
 		icons = true; # Enable icons next to files
 	};
 	extraConfig = 
-		let previewer = pkgs.writeShellScriptBin "pv.sh" ''
+		let previewer = let
+					icat = ''${pkgs.kitty}/bin/kitty +kitten icat --silent --transfer-mode file --place "''${w}x''${h}@''${x}x''${y}"'';
+		in pkgs.writeShellScriptBin "pv.sh" /*bash*/ ''
 			file=$1
 			w=$2
 			h=$3
 			x=$4
 			y=$5
-			
-			if [[ "$( ${pkgs.file}/bin/file -Lb --mime-type "$file")" =~ ^image ]]; then
-				${pkgs.kitty}/bin/kitty +kitten icat --silent --stdin no --transfer-mode file --place "''${w}x''${h}@''${x}x''${y}" "$file" < /dev/null > /dev/tty
-				exit 1
-			fi
-			
+
+			mimetype=$(${pkgs.file}/bin/file -Lb --mime-type "$1")
+
+			case $mimetype in
+				image/* ) 
+					${pkgs.kitty}/bin/kitty +kitten icat --silent --stdin no --transfer-mode file --place "''${w}x''${h}@''${x}x''${y}" "$file" < /dev/null > /dev/tty
+					exit 1
+				;;
+				text/* )
+					${pkgs.bat}/bin/bat --color always --style snip $1
+					exit 1
+				;;
+				application/zip )
+					echo "ZIP encoding"
+					echo
+					zipinfo -1 $1
+				;;
+				application/pdf )
+					echo "PDF Document - lf"
+					# ${pkgs.imagemagick}/bin/magick \'$1\'[0] - | ${pkgs.kitty}/bin/kitten icat --silent --place "''${w}x''${h}@''${x}x''${y}" --stdin yes < /dev/null > /dev/tty
+					${pkgs.imagemagick}/bin/magick "$1"[0] - |${pkgs.kitty}/bin/kitten icat
+				;;
+			esac
+
 			${pkgs.pistol}/bin/pistol "$file"
 		'';
 		cleaner = pkgs.writeShellScriptBin "clean.sh" ''
