@@ -36,7 +36,6 @@ programs.nushell = {
 		q = "exit";
 		f = "yazi";
 		nsp = "nix-shell -p";
-		nrs = "nixos-rebuild switch --flake ~/flake#thinkpad";
 	};
 };
 

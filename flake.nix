@@ -125,7 +125,7 @@
 					inputs.catppuccin.homeModules.catppuccin
 					inputs.nixvim.homeModules.nixvim
 					common/home.nix
-					hosts/pc/homemanger
+					hosts/pc/homemanager
 				];
 			};
 

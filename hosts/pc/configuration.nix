@@ -1,43 +1,23 @@
-{ config, pkgs, ... }:
+{ config, pkgs, inputs, ... }:
 
 {
-  imports =
-    [ # Include the results of the hardware scan.
-      ./hardware-configuration.nix
-    ];
+  imports = [ ./hardware-configuration.nix ];
 
-  # Bootloader.
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
-
-  # Use latest kernel.
   boot.kernelPackages = pkgs.linuxPackages_latest;
 
-  networking.hostName = "nixos"; # Define your hostname.
-  # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
-
-  # Configure network proxy if necessary
-  # networking.proxy.default = "http://user:password@proxy:port/";
-  # networking.proxy.noProxy = "127.0.0.1,localhost,internal.domain";
-
-  # Enable networking
+  networking.hostName = "nixos";
   networking.networkmanager.enable = true;
 
-  # Set your time zone.
   time.timeZone = "America/Toronto";
-
-  # Select internationalisation properties.
   i18n.defaultLocale = "en_CA.UTF-8";
 
-  # Enable the X11 windowing system.
-  # You can disable this if you're only using the Wayland session.
   services.xserver.enable = true;
 
-  # Enable the KDE Plasma Desktop Environment.
   services.displayManager.sddm.enable = true;
   services.desktopManager.plasma6.enable = true;
 
-  # Configure keymap in X11
   services.xserver.xkb = {
     layout = "us";
     variant = "";
@@ -85,6 +65,7 @@
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs; [
+	inputs.zen-browser.packages.${pkgs.stdenv.hostPlatform.system}.default
   ];
 
   system.stateVersion = "25.11"; # Did you read the comment?
@@ -92,5 +73,21 @@
   hardware.graphics.enable = true;
   services.xserver.videoDrivers = [ "nvidia" ];
   hardware.nvidia.open = true;
+
+hardware.fancontrol.enable = true;
+
+fonts.packages = with pkgs; [
+	jetbrains-mono
+	noto-fonts
+	noto-fonts-cjk-sans
+	noto-fonts-color-emoji
+	liberation_ttf
+	ubuntu-classic
+	inter
+];
+
+programs.steam = {
+	enable = true;
+};
 
 }
