@@ -17,9 +17,9 @@
 	programs.zsh = {
 		enable = true;
 		interactiveShellInit = /*sh*/ ''
-			if ! [ "$TERM" = "dumb" ] && [ -z "$BASH_EXECUTION_STRING" ]; then
-				exec nu
-			fi
+# 			if ! [ "$TERM" = "dumb" ] && [ -z "$BASH_EXECUTION_STRING" ]; then
+# 				exec nu
+# 			fi
 		'';
 	};
 	users.defaultUserShell = pkgs.zsh;

@@ -66,6 +66,10 @@
 				./secrets
 			];
 
+			pc = mkSystem [
+				./hosts/pc/configuration.nix
+			];
+
 			nixlab = mkSystem [
 				./hosts/nixlab/configuration.nix
 				./services
@@ -114,16 +118,17 @@
 					common/home-manager/nvim.nix
 				];
 			};
-			msi = home-manager.lib.homeManagerConfiguration {
+
+			pc = home-manager.lib.homeManagerConfiguration {
 				pkgs = import nixpkgs { system = "x86_64-linux"; };
 				modules = [
 					inputs.catppuccin.homeModules.catppuccin
-					inputs.spicetify-nix.homeManagerModules.default
+					inputs.nixvim.homeModules.nixvim
 					common/home.nix
-					hosts/msi/home-manager/home.nix
-					./themes
+					hosts/pc/homemanger
 				];
 			};
+
 			nixlab = home-manager.lib.homeManagerConfiguration {
 				pkgs = import nixpkgs { system = "x86_64-linux"; };
 				modules = [
