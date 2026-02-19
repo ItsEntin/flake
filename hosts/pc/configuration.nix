@@ -1,80 +1,159 @@
-{ config, pkgs, inputs, ... }:
+{ config, lib, pkgs, inputs, ... }: {
 
-{
-  imports = [ ./hardware-configuration.nix ];
+system.stateVersion = "25.11"; 
 
-  boot.loader.systemd-boot.enable = true;
-  boot.loader.efi.canTouchEfiVariables = true;
-  boot.kernelPackages = pkgs.linuxPackages_latest;
+imports = [ 
+	./hardware-configuration.nix
+	
+	# ./system/kdetheme.nix
+];
 
-  networking.hostName = "nixos";
-  networking.networkmanager.enable = true;
+fileSystems = {
+	"/mnt/sata" = {
+		device = "/dev/disk/by-uuid/AA5684245683EF7F";
+		fsType = "ntfs";
+		options = [
+			"nofail"
+			"rw"
+			"exec"
+			"users"
+			"uid=1000"
+			"gid=1000"
+		];
+	};
+	"/mnt/windows" = {
+		device = "/dev/disk/by-uuid/A0FC70B4FC7085F6";
+		fsType = "ntfs";
+		options = [
+			"nofail"
+			"rw"
+			"exec"
+			"users"
+			"gid=1000"
+		];
+	};
+};
 
-  time.timeZone = "America/Toronto";
-  i18n.defaultLocale = "en_CA.UTF-8";
+boot = {
+	kernelPackages = pkgs.linuxPackages_latest;
+	consoleLogLevel = 3;
+	initrd.verbose = false;
+	kernelParams = [
+		"quiet"
+		"splash"
+		"boot.shell_on_fail"
+		"udev.log_level=3"
+		"systemd.show_status=auto"
+	];
+	loader = {
+		timeout = 0;
+		efi.canTouchEfiVariables = true;
+		grub = {
+			enable = true;
+			device = "nodev";
+			useOSProber = true;
+			efiSupport = true;
+			configurationLimit = 5;
+			theme = pkgs.stdenv.mkDerivation {
+				pname = "distro-grub-themes";
+				version = "3.1";
+					src = pkgs.fetchFromGitHub {
+						owner = "AdisonCavani";
+						repo = "distro-grub-themes";
+						rev = "v3.1";
+						hash = "sha256-ZcoGbbOMDDwjLhsvs77C7G7vINQnprdfI37a9ccrmPs=";
+					};
+				installPhase = "cp -r customize/nixos $out";
+			};
+		};
+	};
+	plymouth = {
+		enable = true;
+		theme = "spinner";
+	};
+};
 
-  services.xserver.enable = true;
+networking.hostName = "nixos";
+networking.networkmanager.enable = true;
 
-  services.displayManager.sddm.enable = true;
-  services.desktopManager.plasma6.enable = true;
+time.timeZone = "America/Toronto";
+i18n.defaultLocale = "en_CA.UTF-8";
 
-  services.xserver.xkb = {
-    layout = "us";
-    variant = "";
-  };
+services = {
+	xserver = {
+		enable = true;
+		xkb = {
+			layout = "us";
+			variant = "";
+		};
+	};
+	displayManager.sddm.enable = true;
+	desktopManager.plasma6.enable = true;
+	printing.enable = true;
+	ollama = {
+		enable = true;
+		package = pkgs.ollama-cuda;
+	};
+	open-webui.enable = true;
+};
 
-  # Enable CUPS to print documents.
-  services.printing.enable = true;
 
-  # Enable sound with pipewire.
-  services.pulseaudio.enable = false;
-  security.rtkit.enable = true;
-  services.pipewire = {
-    enable = true;
-    alsa.enable = true;
-    alsa.support32Bit = true;
-    pulse.enable = true;
-    # If you want to use JACK applications, uncomment this
-    #jack.enable = true;
+# Enable sound with pipewire.
+services.pulseaudio.enable = false;
+security.rtkit.enable = true;
+services.pipewire = {
+	enable = true;
+	alsa.enable = true;
+	alsa.support32Bit = true;
+	pulse.enable = true;
+	# If you want to use JACK applications, uncomment this
+	#jack.enable = true;
 
-    # use the example session manager (no others are packaged yet so this is enabled by default,
-    # no need to redefine it in your config for now)
-    #media-session.enable = true;
-  };
+};
 
-  # Enable touchpad support (enabled default in most desktopManager).
-  # services.xserver.libinput.enable = true;
+users.users.evren = {
+	isNormalUser = true;
+	description = "Evren Blandford";
+	extraGroups = [ "networkmanager" "wheel" "camera" "docker" ];
+};
 
-  # Define a user account. Don't forget to set a password with ‘passwd’.
-  users.users.evren = {
-    isNormalUser = true;
-    description = "Evren Blandford";
-    extraGroups = [ "networkmanager" "wheel" ];
-    packages = with pkgs; [
-      kdePackages.kate
-    #  thunderbird
-    ];
-  };
+virtualisation.docker.enable = true;
 
-  # Install firefox.
-  programs.firefox.enable = true;
+nixpkgs.config.allowUnfree = true;
 
-  # Allow unfree packages
-  nixpkgs.config.allowUnfree = true;
+environment.sessionVariables = {
+	# QT_QPA_PLATFORMTHEME = lib.mkForce "qt6ct";
+};
 
-  # List packages installed in system profile. To search, run:
-  # $ nix search wget
-  environment.systemPackages = with pkgs; [
+environment.localBinInPath = true;
+
+environment.systemPackages = with pkgs; [
 	inputs.zen-browser.packages.${pkgs.stdenv.hostPlatform.system}.default
-  ];
+	darkly
+	kdePackages.kamera
+	libreoffice-qt6-fresh
+	hunspell
+	hunspellDicts.en_CA
+	hyphenDicts.en_GB
+	tailscale-systray
+	protonup-qt
+	kdePackages.filelight
+	winboat
+	calibre
+	nodejs_22
+	ungoogled-chromium
+	cudatoolkit
+	haruna
+	(catppuccin-papirus-folders.override { accent = "pink"; })
+];
 
-  system.stateVersion = "25.11"; # Did you read the comment?
 
-  hardware.graphics.enable = true;
-  services.xserver.videoDrivers = [ "nvidia" ];
-  hardware.nvidia.open = true;
+hardware.graphics.enable = true;
+services.xserver.videoDrivers = [ "nvidia" ];
+hardware.nvidia-container-toolkit.enable = true;
+hardware.nvidia.open = true;
 
-hardware.fancontrol.enable = true;
+# hardware.fancontrol.enable = true;
 
 fonts.packages = with pkgs; [
 	jetbrains-mono
@@ -84,10 +163,21 @@ fonts.packages = with pkgs; [
 	liberation_ttf
 	ubuntu-classic
 	inter
+	source-sans
+	source-sans-pro
+	# ibm-plex
 ];
 
-programs.steam = {
-	enable = true;
+programs = {
+	firefox.enable = true;
+	steam.enable = true;
+	gamemode.enable = true;
+	gphoto2.enable = true;
+	kdeconnect.enable = true;
+	appimage = {
+		enable = true;
+		binfmt = true;
+	};
 };
 
 }

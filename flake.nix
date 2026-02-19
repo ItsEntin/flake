@@ -24,6 +24,7 @@
 			url = "github:youwen5/zen-browser-flake";
 			inputs.nixpkgs.follows = "nixpkgs";
 		};
+		affinity-nix.url = "github:mrshmllow/affinity-nix";
 	};
 
 	outputs = inputs@{ self, nixpkgs, nixos-hardware, home-manager, ... }: let
@@ -121,9 +122,11 @@
 
 			pc = home-manager.lib.homeManagerConfiguration {
 				pkgs = import nixpkgs { system = "x86_64-linux"; };
+				extraSpecialArgs = {inherit inputs;};
 				modules = [
 					inputs.catppuccin.homeModules.catppuccin
 					inputs.nixvim.homeModules.nixvim
+					inputs.spicetify-nix.homeManagerModules.default
 					common/home.nix
 					hosts/pc/homemanager
 				];
