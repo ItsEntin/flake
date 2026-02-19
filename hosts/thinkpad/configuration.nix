@@ -107,6 +107,8 @@ environment.shellAliases = {
 	nrs = "sudo nixos-rebuild switch --flake /home/evren/flake#thinkpad";
 };
 
+environment.localBinInPath = true;
+
 nixpkgs.config.allowUnfree = true;
 nix.settings.experimental-features = [
 	"nix-command"
@@ -150,6 +152,7 @@ environment.systemPackages = with pkgs; [
 	nodejs
 	# where-is-my-sddm-theme
 	inputs.zen-browser.packages.${pkgs.stdenv.hostPlatform.system}.default
+	(callPackage ./../../pkgs/helium {})
 ];
 
 fonts.packages = with pkgs; [
