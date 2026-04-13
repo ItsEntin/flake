@@ -17,11 +17,12 @@
 		/qt.nix
 		# /swaync.nix
 		/calendar.nix
-		/quickshell.nix
+		# /quickshell.nix
 		# /spotify.nix
 		/udiskie.nix
 		/ghostty.nix
 		/vicinae.nix
+		/niri.nix
 	] ++ lib.lists.map (x: ./home-manager + x ) [
 	# Host Modules
 	];
@@ -40,6 +41,7 @@
 		zathura
 		pandoc
 		signal-desktop
+		dms-shell
 	];
 
 	home.shellAliases = {

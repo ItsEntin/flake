@@ -4,8 +4,8 @@ wayland.windowManager.hyprland = {
 	enable = true;
 	plugins = with pkgs.hyprlandPlugins; [
 		# hyprbars
-		hypr-dynamic-cursors
-		hyprexpo
+		# hypr-dynamic-cursors
+		# hyprexpo
 	];
 	settings = {
 		exec-once = [

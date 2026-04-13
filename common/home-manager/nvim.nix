@@ -485,6 +485,7 @@ programs.nixvim = {
 
 		lualine = {
 			enable = true;
+<<<<<<< HEAD
 			# settings = {
 			# 	options = {
 			# 		# theme.__raw = "cat";

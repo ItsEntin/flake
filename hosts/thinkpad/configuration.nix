@@ -1,7 +1,3 @@
-# Edit this configuration file to define what should be installed on
-# your system. Help is available in the configuration.nix(5) man page, on
-# https://search.nixos.org/options and in the NixOS manual (`nixos-help`).
-
 { config, lib, pkgs, inputs, ... }:
 
 {
@@ -15,17 +11,15 @@
 networking.hostName = "nixos";
 system.stateVersion = "24.11"; # Do not change!
 
-# Use the systemd-boot EFI boot loader.
-# boot.loader.systemd-boot.enable = true;
-# boot.loader.efi.canTouchEfiVariables = true;
-# boot.loader.grub.device = "nodev";
-
 boot = {
 	consoleLogLevel = 3;
 	initrd.verbose = false;
 	initrd.systemd.enable = false;
 	loader = {
-		systemd-boot.enable = true;
+		systemd-boot = {
+			enable = true;
+			configurationLimit = 5;
+		};
 		efi.canTouchEfiVariables = true;
 		grub.device = "nodev";
 		timeout = 0;
@@ -69,14 +63,14 @@ fileSystems = {
 		fsType = "vfat";
 		options = [ "fmask=0022" "dmask=0022" ];
 	};
-	"/mnt/server" = {
-		device = "//nixlab/Storage";
-		fsType = "cifs";
-		options = let 
-			automountOpts = "x-systemd.automount,noauto,x-systemd.idle-timeout=60,x-systemd.device-timeout=5s,x-systemd.mount-timeout=5s";
-		in
-			["${automountOpts},credentials=${config.age.secrets.samba-creds.path}"];
-	};
+	# "/mnt/server" = {
+	# 	device = "//nixlab/Storage";
+	# 	fsType = "cifs";
+	# 	options = let 
+	# 		automountOpts = "x-systemd.automount,noauto,x-systemd.idle-timeout=60,x-systemd.device-timeout=5s,x-systemd.mount-timeout=5s";
+	# 	in
+	# 		["${automountOpts},credentials=${config.age.secrets.samba-creds.path}"];
+	# };
 };
 
 networking.interfaces.enp0s31f6.ipv4.addresses = [{
@@ -115,9 +109,9 @@ nix.settings.experimental-features = [
 	"flakes"
 ];
 
-# powerManagement = {
-# 	enable = true;
-# };
+powerManagement = {
+	enable = true;
+};
 #
 # services.tlp = {
 # 	enable = true;
@@ -125,10 +119,8 @@ nix.settings.experimental-features = [
 
 environment.systemPackages = with pkgs; [
 	vim
-	# neovim
 	kitty
 	networkmanager
-	neofetch
 	acpi
 	imv
 	mpv
@@ -136,24 +128,24 @@ environment.systemPackages = with pkgs; [
 	pavucontrol
 	blueman
 	mangohud
-	javaPackages.openjfx21
-	libGL
 	sshfs
-	(jdk21.override { enableJavaFX = true; })
 	direnv
 	rustup
 	cargo
 	cifs-utils # for samba mounting
 	cmake
 	ninja
-	flutter
-	dart
-	pkg-config
 	nodejs
 	# where-is-my-sddm-theme
 	inputs.zen-browser.packages.${pkgs.stdenv.hostPlatform.system}.default
 	(callPackage ./../../pkgs/helium {})
+	gparted
+	brightnessctl
+	comma
+	cowsay
 ];
+
+security.polkit.enable = true;
 
 fonts.packages = with pkgs; [
 	jetbrains-mono
@@ -163,10 +155,11 @@ fonts.packages = with pkgs; [
 	liberation_ttf
 	ubuntu-classic
 	inter
+	ibm-plex
+	iosevka
 ];
 
 programs.hyprland.enable = true;
-programs.light.enable = true; # Backlight control
 services.udisks2.enable = true; # USB handler
 services.blueman.enable = true; # Bluetooth configuration gui
 services.openssh.enable = true; # SSH Daemon
@@ -183,6 +176,7 @@ programs.steam = {
 };
 programs.gamemode.enable = true;
 
+programs.dms-shell.enable = true;
 programs.java = {
 	enable = true;
 	package = (pkgs.jdk21.override { enableJavaFX = true; });
@@ -192,6 +186,10 @@ services.mysql = {
 	enable = true;
 	package = pkgs.mariadb;
 };
+
+services.fprintd.enable = true;
+
+programs.niri.enable = true;
 
 programs.appimage = {
 	enable = true;

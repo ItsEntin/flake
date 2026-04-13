@@ -25,6 +25,7 @@
 			inputs.nixpkgs.follows = "nixpkgs";
 		};
 		affinity-nix.url = "github:mrshmllow/affinity-nix";
+		niri.url = "github:sodiboo/niri-flake";
 	};
 
 	outputs = inputs@{ self, nixpkgs, nixos-hardware, home-manager, ... }: let
@@ -64,7 +65,7 @@
 				nixos-hardware.nixosModules.lenovo-thinkpad-t480s
 				./hosts/thinkpad/configuration.nix
 				./themes
-				./secrets
+				# ./secrets
 			];
 
 			pc = mkSystem [
@@ -104,6 +105,7 @@
 			hmCommonModules = [
 				inputs.catppuccin.homeModules.catppuccin
 				inputs.nixvim.homeManagerModules.nixvim
+				inputs.agenix.homeManagerModules.default
 				common/home.nix
 			];
 		in {
@@ -113,6 +115,8 @@
 					inputs.catppuccin.homeModules.catppuccin
 					inputs.spicetify-nix.homeManagerModules.default
 					inputs.nixvim.homeModules.nixvim
+					inputs.niri.homeModules.niri
+					./secrets
 					common/home.nix
 					hosts/thinkpad/home.nix
 					./themes
@@ -152,6 +156,8 @@
 				];
 			};
 		};
+
+		packages.${system}.default = nixpkgs.legacyPackages.${system}.mkShellScriptBin {};
 
 	};
 }
