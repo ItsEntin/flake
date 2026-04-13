@@ -17,7 +17,6 @@
         vesktop
         qbittorrent
         protonvpn-gui
-        orca-slicer
 		signal-desktop
 		vlc
 		inputs.affinity-nix.packages.x86_64-linux.v3
@@ -39,7 +38,10 @@
     home.shellAliases = {
         hms = "home-manager switch --flake ~/flake#pc";
 		nrs = "sudo nixos-rebuild switch --flake ~/flake#pc";
-		openclaw = "~/.npm-global/bin/openclaw";
     };
+
+	xdg.configFile = {
+		"net.imput.helium/WidevineCdm/latest-component-updated-widevine-cdm".text = ''{"Path":"${pkgs.google-chrome}/share/google/chrome/WidevineCdm"}'';
+	};
 
 }

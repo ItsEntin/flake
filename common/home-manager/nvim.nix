@@ -485,75 +485,75 @@ programs.nixvim = {
 
 		lualine = {
 			enable = true;
-			settings = {
-				options = {
-					# theme.__raw = "cat";
-					globalstatus = true;
-					theme.__raw = ''
-						function()
-							local cat = require("lualine.themes.catppuccin")
-							cat.normal.a.bg = '${accent.hex}'
-							cat.normal.b.fg = '${accent.hex}'
-							cat.insert.a.bg = '${cat.sapphire.hex}'
-							cat.insert.b.fg = '${cat.sapphire.hex}'
-							cat.inactive.c.bg = '${cat.mantle.hex}'
-							return cat
-						end
-					'';
-					icons_enabled = true;
-					component_separators = { left = ""; right = ""; };
-					section_separators = { left = ""; right = ""; };
-					disabled_filetypes = [
-						"neo-tree"
-						"toggleterm"
-						"alpha"
-						"term"
-					];
-				};
-				extensions = [
-					"trouble"
-					"nvim-tree"
-					"neo-tree"
-				];
-				sections = {
-					lualine_a = ["mode"];
-					lualine_b = [{
-						__unkeyed-1.__raw = /*lua*/ ''
-							function()
-								if (vim.bo.modified) then
-									return '󰏫'
-								elseif (vim.bo.modifiable == false) or (vim.bo.readonly == true) then
-									return ''
-								else 
-									return ''
-								end
-							end
-						'';
-					}];
-					lualine_c = [
-						{
-							__unkeyed-1 = "filename";
-							path = 1;
-							# file_status = false;
-							symbols = {
-								unnamed = "New File";
-								modified = "";
-								readonly = "";
-							};
-						}
-					];
-					lualine_x = ["filetype"];
-					lualine_y = ["branch" "diagnostics"];
-					lualine_z = ["location"];
-				};
-				# winbar = {
-				# 	lualine_c = [
-				# 		{
-				# 			__unkeyed-1 = "navic";
-				# 		}
-				# 	];
-				# };
-			};
+			# settings = {
+			# 	options = {
+			# 		# theme.__raw = "cat";
+			# 		globalstatus = true;
+			# 		theme.__raw = ''
+			# 			function()
+			# 				local cat = require("lualine.themes.catppuccin")
+			# 				cat.normal.a.bg = '${accent.hex}'
+			# 				cat.normal.b.fg = '${accent.hex}'
+			# 				cat.insert.a.bg = '${cat.sapphire.hex}'
+			# 				cat.insert.b.fg = '${cat.sapphire.hex}'
+			# 				cat.inactive.c.bg = '${cat.mantle.hex}'
+			# 				return cat
+			# 			end
+			# 		'';
+			# 		icons_enabled = true;
+			# 		# component_separators = { left = ""; right = ""; };
+			# 		# section_separators = { left = ""; right = ""; };
+			# 		disabled_filetypes = [
+			# 			"neo-tree"
+			# 			"toggleterm"
+			# 			"alpha"
+			# 			"term"
+			# 		];
+			# 	};
+			# 	extensions = [
+			# 		"trouble"
+			# 		"nvim-tree"
+			# 		"neo-tree"
+			# 	];
+			# 	sections = {
+			# 		lualine_a = ["mode"];
+			# 		lualine_b = [{
+			# 			__unkeyed-1.__raw = /*lua*/ ''
+			# 				function()
+			# 					if (vim.bo.modified) then
+			# 						return '󰏫'
+			# 					elseif (vim.bo.modifiable == false) or (vim.bo.readonly == true) then
+			# 						return ''
+			# 					else 
+			# 						return ''
+			# 					end
+			# 				end
+			# 			'';
+			# 		}];
+			# 		lualine_c = [
+			# 			{
+			# 				__unkeyed-1 = "filename";
+			# 				path = 1;
+			# 				# file_status = false;
+			# 				symbols = {
+			# 					unnamed = "New File";
+			# 					modified = "";
+			# 					readonly = "";
+			# 				};
+			# 			}
+			# 		];
+			# 		lualine_x = ["filetype"];
+			# 		lualine_y = ["branch" "diagnostics"];
+			# 		lualine_z = ["location"];
+			# 	};
+			# 	# winbar = {
+			# 	# 	lualine_c = [
+			# 	# 		{
+			# 	# 			__unkeyed-1 = "navic";
+			# 	# 		}
+			# 	# 	];
+			# 	# };
+			# };
 		};
 
 		web-devicons.enable = true;

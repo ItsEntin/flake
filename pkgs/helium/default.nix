@@ -5,18 +5,14 @@
 }: let
 
 	pname = "helium";
-	version = "0.9.2.1";
+	version = "0.10.9.1";
 
 	src = fetchurl {
 		url = "https://github.com/imputnet/helium-linux/releases/download/${version}/helium-${version}-x86_64.AppImage";
-		hash = "sha256-guDBIr8NOD0GtjWznsVXlvb6llvdWHxREfDvXeP4m/w=";
+		hash = "sha256-FMO4gB2zOjhgmjfE/T0XdDb0NMDKsQFuzy/Org1iD48=";
 	};
 
 	contents = appimageTools.extract { inherit pname version src;};
-
-in appimageTools.wrapType2 rec {
-
-	inherit pname version src;
 
 	extraInstallCommands = ''
 		install -m 555 -D ${contents}/helium.desktop -t $out/share/applications
@@ -33,4 +29,7 @@ in appimageTools.wrapType2 rec {
 		mainProgram = "helium";
 		platform = [ lib.platforms.linux ];
 	};
+
+in appimageTools.wrapType2 {
+	inherit pname version src extraInstallCommands meta;
 }
